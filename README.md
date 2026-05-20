@@ -64,6 +64,3 @@ Response:
 
 DSPy · GEPA · MIPROv2 · Gemma 3 27B · OpenRouter · scikit-learn · FastAPI
 
-## License
-
-MIT
