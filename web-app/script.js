@@ -27,3 +27,8 @@ ry {
                 },
                 body: JSON.stringify({ text: textToClassify })
             });
+if (!response.ok) {
+                throw new Error(`API returned status: ${response.status}`);
+            }
+
+            const data = await response.json();
