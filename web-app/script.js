@@ -80,4 +80,13 @@ function setLoadingState(isLoading) {
     }
 
     }
+// Auto-resize textarea logic (optional nice-to-have)
+    input.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+        if (this.value === '') {
+            this.style.height = '120px'; // min-height
+        }
+    });
+});
 
