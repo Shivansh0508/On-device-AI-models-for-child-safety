@@ -61,5 +61,23 @@ function setLoadingState(isLoading) {
             submitBtn.disabled = false;
             submitBtn.classList.remove('loading');
         }
+    function showResult(text) {
+        resultText.textContent = text;
+        resultContainer.classList.remove('hidden');
+    }
+
+    function hideResult() {
+        resultContainer.classList.add('hidden');
+    }
+
+    function showError(message) {
+        errorText.textContent = message;
+        errorContainer.classList.remove('hidden');
+    }
+
+    function hideError() {
+        errorContainer.classList.add('hidden');
+    }
+
     }
 
