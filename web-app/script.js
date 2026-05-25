@@ -53,4 +53,13 @@ if (!response.ok) {
             setLoadingState(false);
         }
     });
+function setLoadingState(isLoading) {
+        if (isLoading) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+        }
+    }
 
