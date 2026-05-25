@@ -11,14 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const textToClassify = input.value.trim();
         if (!textToClassify) return;
-
-        // Reset UI state
         setLoadingState(true);
         hideResult();
         hideError();
-ry {
-            // ngrok might block CORS or have a browser warning page. 
-            // We set headers to request JSON explicitly.
+try {
             const response = await fetch("https://wrought-mold-confider.ngrok-free.dev/predict", {
                 method: 'POST',
                 headers: {
@@ -32,8 +28,6 @@ if (!response.ok) {
             }
 
             const data = await response.json();
-    // Assuming the API returns something like { "category": "Spam" } or similar.
-            // We will display the value or the whole string.
             let categoryToDisplay = '';
 
             if (data && typeof data === 'object') {
@@ -80,12 +74,11 @@ function setLoadingState(isLoading) {
     }
 
     }
-// Auto-resize textarea logic (optional nice-to-have)
     input.addEventListener('input', function () {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
         if (this.value === '') {
-            this.style.height = '120px'; // min-height
+            this.style.height = '120px'; 
         }
     });
 });
