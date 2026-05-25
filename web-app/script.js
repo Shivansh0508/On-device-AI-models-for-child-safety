@@ -32,3 +32,25 @@ if (!response.ok) {
             }
 
             const data = await response.json();
+    // Assuming the API returns something like { "category": "Spam" } or similar.
+            // We will display the value or the whole string.
+            let categoryToDisplay = '';
+
+            if (data && typeof data === 'object') {
+                // If it returns { category: "..." } or { label: "..." } or { prediction: "..." }
+                categoryToDisplay = data.category || data.label || data.prediction || data.result || Object.values(data)[0] || JSON.stringify(data);
+            } else {
+                // If it returns a plain string
+                categoryToDisplay = String(data);
+            }
+
+            showResult(categoryToDisplay);
+
+        } catch (error) {
+            console.error('Classification error:', error);
+            showError('Failed to classify text. Please ensure the API is running and accessible.');
+        } finally {
+            setLoadingState(false);
+        }
+    });
+
