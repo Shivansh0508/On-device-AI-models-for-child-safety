@@ -235,3 +235,18 @@ submit-btn {
     visibility: hidden;
     transition: var(--transition);
 }
+.submit-btn.loading .btn-text {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.submit-btn.loading .loader {
+    opacity: 1;
+    visibility: visible;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
