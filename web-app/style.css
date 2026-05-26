@@ -50,3 +50,11 @@ body::after {
     opacity: 0.4;
     animation: pulse 8s infinite alternate;
 }
+body::before {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
