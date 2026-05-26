@@ -270,4 +270,12 @@ submit-btn {
         transform: translateY(0);
     }
 }
+.result-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
 
