@@ -313,7 +313,6 @@ submit-btn {
     font-weight: 500;
 }
 
-/* Scrollbar styling for textarea */
 ::-webkit-scrollbar {
     width: 8px;
 }
