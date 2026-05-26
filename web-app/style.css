@@ -170,3 +170,23 @@ textarea:focus {
 textarea::placeholder {
     color: #475569;
 }
+submit-btn {
+    position: relative;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 54px;
+    box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+}
+
