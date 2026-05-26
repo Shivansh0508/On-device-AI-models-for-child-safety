@@ -278,4 +278,12 @@ submit-btn {
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
-
+.result-box {
+    background: var(--result-bg);
+    border: 1px solid var(--result-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
