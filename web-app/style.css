@@ -120,3 +120,19 @@ body::after {
     color: transparent;
     letter-spacing: -0.5px;
 }
+.app-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 300;
+}
+
+.classifier-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
