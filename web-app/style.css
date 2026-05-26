@@ -250,3 +250,12 @@ submit-btn {
         transform: rotate(360deg);
     }
 }
+.result-container,
+.error-container {
+    margin-top: 1.5rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hidden {
+    display: none !important;
+}
