@@ -304,3 +304,17 @@ submit-btn {
     gap: 0.75rem;
     color: var(--error-text);
 }
+.error-box svg {
+    flex-shrink: 0;
+}
+
+#error-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Scrollbar styling for textarea */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
