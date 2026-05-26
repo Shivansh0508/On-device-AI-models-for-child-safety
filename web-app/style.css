@@ -201,3 +201,25 @@ submit-btn {
     transition: var(--transition);
     z-index: 1;
 }
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.submit-btn:hover::before {
+    opacity: 1;
+}
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
