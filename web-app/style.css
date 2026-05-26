@@ -29,4 +29,14 @@
     margin: 0;
     padding: 0;
 }
-
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    line-height: 1.5;
+}
