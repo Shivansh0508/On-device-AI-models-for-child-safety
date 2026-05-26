@@ -287,3 +287,10 @@ submit-btn {
     align-items: center;
     justify-content: center;
 }
+#result-text {
+    color: var(--result-text);
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    text-transform: capitalize;
+}
