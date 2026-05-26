@@ -40,3 +40,13 @@ body {
     padding: 2rem 1rem;
     line-height: 1.5;
 }
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: pulse 8s infinite alternate;
+}
