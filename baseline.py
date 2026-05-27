@@ -54,3 +54,18 @@ for attempt in range(max_retries):
             else:
                 raise e
     raise RuntimeError(" OpenRouter failed after multiple retries")
+
+def relaxed_parse(output):
+    binary = {k: 0 for k in label_cols}
+    try:
+        match = re.search(r'\{.*?\}', output, re.DOTALL)
+        if match:
+            parsed = json.loads(match.group())
+            binary["political"]     = int(parsed.get("political", 0))
+            binary["racial/ethnic"] = int(parsed.get("racial_ethnic", 0))
+            binary["religious"]     = int(parsed.get("religious", 0))
+            binary["gender/sexual"] = int(parsed.get("gender_sexual", 0))
+            binary["other"]         = int(parsed.get("other", 0))
+    except Exception as e:
+        print(f"Parse error: {e} | Output: {output[:100]}")
+    return binary
