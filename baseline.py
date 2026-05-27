@@ -111,3 +111,20 @@ else:
     pred_df = pd.DataFrame(results)
     pred_df.to_csv(RESULTS_FILE, index=False)
     print(" Results saved to baseline_results.csv")
+    
+# Evaluate
+y_true = pred_df[
+    ["true_political", "true_racial/ethnic", "true_religious",
+     "true_gender/sexual", "true_other"]
+].values
+
+y_pred = pred_df[
+    ["pred_political", "pred_racial/ethnic", "pred_religious",
+     "pred_gender/sexual", "pred_other"]
+].values
+
+# Exact-match accuracy
+exact_match_accuracy = (y_true == y_pred).all(axis=1).mean()
+
+# Macro-F1
+macro_f1 = f1_score(y_true, y_pred, average="macro", zero_division=1)
