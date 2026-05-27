@@ -6,9 +6,9 @@ Detecting polarising language across five categories in social media text using 
 
 ## What This Project Does
 
-Social media posts often carry hostility across multiple dimensions at once — a single sentence can be politically charged, racially biased, and religiously inflammatory simultaneously. Standard toxicity detectors reduce this to a single flag and lose all categorical detail that moderation actually needs.
+Social media posts often carry hostility across multiple dimensions at once , a single sentence can be politically charged, racially biased, and religiously inflammatory simultaneously. Standard toxicity detectors reduce this to a single flag and lose all categorical detail that moderation actually needs.
 
-This system classifies each sentence across five polarisation categories simultaneously. A sentence only gets a positive label if it actively **expresses** hostility — not if it merely mentions the topic.
+This system classifies each sentence across five polarisation categories simultaneously. A sentence only gets a positive label if it actively **expresses** hostility , not if it merely mentions the topic.
 
 | Label | Positive (1) if... |
 |---|---|
