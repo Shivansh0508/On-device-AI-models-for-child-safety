@@ -79,3 +79,35 @@ def call_with_retry_on_parse_failure(prompt, temperature=0.0):
         raw = call_model(prompt, temperature=temperature)
         pred = relaxed_parse(raw)
     return pred
+    
+# Running baseline 
+RESULTS_FILE = "baseline_results.csv"
+if os.path.exists(RESULTS_FILE):
+    print(" Loading saved baseline results...")
+    pred_df = pd.read_csv(RESULTS_FILE)
+else:
+    print(" Running baseline inference...")
+    results = []
+
+    for _, row in tqdm(df_sample.iterrows(), total=len(df_sample)):
+        prompt = BASELINE_PROMPT.format(text=row["text"])
+        pred = call_with_retry_on_parse_failure(prompt, temperature=0.0)
+
+        results.append({
+            "pred_political":     pred["political"],
+            "pred_racial/ethnic": pred["racial/ethnic"],
+            "pred_religious":     pred["religious"],
+            "pred_gender/sexual": pred["gender/sexual"],
+            "pred_other":         pred["other"],
+
+            "true_political":     row["political"],
+            "true_racial/ethnic": row["racial/ethnic"],
+            "true_religious":     row["religious"],
+            "true_gender/sexual": row["gender/sexual"],
+            "true_other":         row["other"],
+        })
+        time.sleep(0.3)
+
+    pred_df = pd.DataFrame(results)
+    pred_df.to_csv(RESULTS_FILE, index=False)
+    print(" Results saved to baseline_results.csv")
