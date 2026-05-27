@@ -40,3 +40,17 @@ def call_model(prompt, temperature=0.0, max_retries=5):
     payload = {
         "model": "meta-llama/llama-3.3-70b-instruct", "messages": [{"role": "user", "content": prompt}],  "temperature": temperature
     }
+for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=60)
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
+
+        except requests.exceptions.HTTPError as e:
+            if response.status_code >= 500:
+                wait = 2 ** attempt
+                print(f" Server error {response.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise e
+    raise RuntimeError(" OpenRouter failed after multiple retries")
