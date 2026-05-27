@@ -69,3 +69,13 @@ def relaxed_parse(output):
     except Exception as e:
         print(f"Parse error: {e} | Output: {output[:100]}")
     return binary
+    
+def call_with_retry_on_parse_failure(prompt, temperature=0.0):
+    """Retry once if parse fails (all zeros likely means bad parse)"""
+    raw = call_model(prompt, temperature=temperature)
+    pred = relaxed_parse(raw)
+    if all(v == 0 for v in pred.values()):
+        print(" Possible parse failure, retrying...")
+        raw = call_model(prompt, temperature=temperature)
+        pred = relaxed_parse(raw)
+    return pred
