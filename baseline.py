@@ -19,3 +19,16 @@ df[label_cols] = df[label_cols].fillna(0)
 print(df.head())
 print("Label distribution:")
 print(df[label_cols].sum())
+# Fixed 160 samples 
+df_sample = df.sample(160, random_state=42)
+
+# BASELINE: Simple Prompt 
+BASELINE_PROMPT = """
+Classify this sentence.
+Labels: political, racial_ethnic, religious, gender_sexual, other.
+Return 0 or 1 for each.
+
+Sentence: {text}
+
+Format: {{"political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0}}
+"""
