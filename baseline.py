@@ -114,17 +114,19 @@ else:
     
 # Evaluate
 y_true = pred_df[
-    ["true_political", "true_racial/ethnic", "true_religious",
-     "true_gender/sexual", "true_other"]
-].values
+    ["true_political", "true_racial/ethnic", "true_religious","true_gender/sexual", "true_other"]].values
 
 y_pred = pred_df[
-    ["pred_political", "pred_racial/ethnic", "pred_religious",
-     "pred_gender/sexual", "pred_other"]
-].values
+    ["pred_political", "pred_racial/ethnic", "pred_religious","pred_gender/sexual", "pred_other"]].values
 
 # Exact-match accuracy
 exact_match_accuracy = (y_true == y_pred).all(axis=1).mean()
 
 # Macro-F1
 macro_f1 = f1_score(y_true, y_pred, average="macro", zero_division=1)
+
+print(f"\n📊 Baseline Results (Pipeline 1):")
+print(f"Model                : meta-llama/llama-3.3-70b-instruct")
+print(f"Exact-match Accuracy : {exact_match_accuracy:.4f}")
+print(f"Macro-F1             : {macro_f1:.4f}")
+print(f"Macro-F1 (%)         : {macro_f1 * 100:.2f}")
