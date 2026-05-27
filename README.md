@@ -24,7 +24,7 @@ This system classifies each sentence across five polarisation categories simulta
 
 | Method | Model | Samples | Macro-F1 | Δ |
 |---|---|---|---|---|
-| Zero-Shot Baseline | Gemma 3 27B | 200 | 39.5% | — |
+| Zero-Shot Baseline | Gemma 3 27B | 200 | 39.5% |, |
 | GEPA Optimised | Gemma 3 27B | 200 | 41.1% | +1.6 pts |
 | MIPROv2 Optimised | Gemma 3 27B | 200 | 42.0% | +2.5 pts |
 
@@ -33,32 +33,32 @@ This system classifies each sentence across five polarisation categories simulta
 ## Five-Stage Pipeline
 
 ```
-Stage 1 — Zero-Shot Baseline
+Stage 1, Zero-Shot Baseline
         ↓
-Stage 2 — GEPA Prompt Optimisation
+Stage 2, GEPA Prompt Optimisation
         ↓
-Stage 3 — MIPROv2 Prompt Optimisation
+Stage 3, MIPROv2 Prompt Optimisation
         ↓
-Stage 4 — Multilingual Translation Augmentation
+Stage 4, Multilingual Translation Augmentation
         ↓
-Stage 5 — Evaluation + Confidence Intervals
+Stage 5, Evaluation + Confidence Intervals
 ```
 
-**Stage 1 — Zero-Shot Baseline**
-Runs Gemma 3 27B with a minimal prompt — no definitions, no examples. Establishes the performance floor and exposes where the model fails by default.
+**Stage 1, Zero-Shot Baseline**
+Runs Gemma 3 27B with a minimal prompt, no definitions, no examples. Establishes the performance floor and exposes where the model fails by default.
 
-**Stage 2 — GEPA Optimisation**
+**Stage 2, GEPA Optimisation**
 Evolutionary prompt search over 100 training samples. Generates candidate prompts, evaluates each, keeps the best, mutates and repeats. Adds bootstrapped few-shot demonstrations automatically.
 
-**Stage 3 — MIPROv2 Optimisation**
+**Stage 3, MIPROv2 Optimisation**
 Bayesian prompt optimisation within DSPy. More sample-efficient than GEPA on small training pools. Discovers improved instructions and up to 3 few-shot demonstrations.
 
-**Stage 4 — Multilingual Translation**
+**Stage 4, Multilingual Translation**
 Samples 50 examples from each of 21 non-English language files, translates to English using Gemma 3 27B via OpenRouter, and combines with the English dataset to expand the training pool.
 
 Languages: Arabic · Bengali · German · Hindi · Persian · Spanish · Turkish · Russian · Chinese · Polish · Swahili · Italian · Nepali · Punjabi · Burmese · Khmer · Hausa · Amharic · Odia · Telugu · Urdu
 
-**Stage 5 — Evaluation**
+**Stage 5, Evaluation**
 Full evaluation with macro-F1, per-label F1, exact-match accuracy, 95% bootstrap confidence intervals, and parse failure tracking.
 
 ---
@@ -198,23 +198,23 @@ final labels = jsonDecode(response.body);
 1. Push repo to GitHub
 2. Connect to [render.com](https://render.com)
 3. Add `OPENROUTER_API_KEY` as environment variable
-4. Deploy — live URL in minutes
+4. Deploy, live URL in minutes
 
 ---
 
 ## Testing with Postman
 
-Import `postman_collection.json` to get pre-built requests for all five label categories, multi-label cases, true negatives, and edge cases. Includes automated tests for response format, binary values, and response time. Two environments configured — local and production.
+Import `postman_collection.json` to get pre-built requests for all five label categories, multi-label cases, true negatives, and edge cases. Includes automated tests for response format, binary values, and response time. Two environments configured, local and production.
 
 ---
 
 ## Known Limitations
 
-- 200-sample evaluation set — confidence intervals overlap for small gains
-- Same LLM used for both translation and classification — errors are not decoupled
-- MIPROv2 run in light mode (~25 trials) — heavier search may improve results
+- 200-sample evaluation set, confidence intervals overlap for small gains
+- Same LLM used for both translation and classification, errors are not decoupled
+- MIPROv2 run in light mode (~25 trials), heavier search may improve results
 - No fine-tuned transformer baselines (XLM-R, mDeBERTa) for comparison
-- Requires active OpenRouter API key — not suitable for fully offline deployment
+- Requires active OpenRouter API key, not suitable for fully offline deployment
 
 ---
 
