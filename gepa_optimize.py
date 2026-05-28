@@ -282,80 +282,20 @@ if improvement > 0:
 else:
     print(f" No improvement: {improvement:.2f}%")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# SAVE OPTIMIZED PROMPT AND RESULTS
+with open("gepa_optimized_prompt.txt", "w") as f:
+    f.write("="*60 + "\n")
+    f.write("OPTIMIZED PROMPT — GEPA Pipeline 2\n")
+    f.write("Task Model      : google/gemma-3-27b-it\n")
+    f.write("Reflection Model: meta-llama/llama-3.3-70b-instruct\n")
+    f.write("="*60 + "\n\n")
+    f.write(OPTIMIZED_PROMPT)
+    f.write("\n\n")
+    f.write("="*60 + "\n")
+    f.write("PERFORMANCE (sklearn Macro-F1 on 160 samples)\n")
+    f.write("="*60 + "\n")
+    f.write(f"Baseline Macro-F1  : {baseline_f1*100:.2f}%\n")
+    f.write(f"Optimized Macro-F1 : {gepa_f1*100:.2f}%\n")
+    f.write(f"Improvement        : +{improvement:.2f}%\n")
+
+print(" Saved to: gepa_optimized_prompt.txt")
