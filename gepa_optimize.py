@@ -243,7 +243,16 @@ Return ONLY a JSON object:
     return exact_match, macro_f1
 
 # EVALUATE BASELINE ON 160 SAMPLES
+BASELINE_PROMPT = """Classify this sentence.
+Labels: political, racial_ethnic, religious, gender_sexual, other.
+Return 0 or 1 for each."""
 
+print("\n===== EVALUATING BASELINE PROMPT ON 160 SAMPLES =====")
+baseline_exact, baseline_f1 = run_evaluation(
+    BASELINE_PROMPT,
+    results_file="baseline_results.csv",
+    label="Baseline"
+)
 
 
 
