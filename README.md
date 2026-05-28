@@ -67,23 +67,24 @@ Full evaluation with macro-F1, per-label F1, exact-match accuracy, 95% bootstrap
 
 ```
 📦 root
-├── baseline.py                  # Stage 1
-├── gepa_optimize.py             # Stage 2
-├── miprov2_optimize.py          # Stage 3
-├── translate_multilingual.py    # Stage 4
-├── evaluate.py                  # Stage 5
-├── main.py                      # FastAPI deployment
-├── postman_collection.json      # API test collection
-├── requirements.txt
+├── baseline.py                                    # Stage 1
+├── gepa_optimize_allCLASSES.py                    # Stage 2
+├── gepa_optimize_IndividualCLASSES.py             # Stage 3
+├── ChatGpt_Prompt_Examples.py                     # Stage 4
+├── translate_multilingual.py                      # Stage 5
+├── main.py                                        # FastAPI deployment
+├── postman_collection.json                        # API test collection
+├──Datasets
 ├── 📂 train/
 │   ├── eng.csv                  # English data
 │   ├── arb.csv                  # Arabic
 │   ├── ben.csv                  # Bengali
 │   └── ...                      # 19 more languages
-├── 📂 results/
-│   ├── optimized_prompt.txt     # Final prompt + demos
-│   ├── eval_results.csv         # Predictions
-│   └── translated_samples.csv   # Translated data
+├── 📂 dev/
+│   ├──  eng.csv                  # English data
+│   ├── arb.csv                  # Arabic
+│   ├── ben.csv                  # Bengali
+│   └── ...                      # 19 more languages
 └── README.md
 ```
 
