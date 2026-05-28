@@ -12,7 +12,7 @@ import re
 from tqdm import tqdm
 import getpass
 
-# CONFIG# 
+# CONFIG
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
@@ -36,3 +36,32 @@ prompt_lm = dspy.LM(
     api_key=os.environ["OPENROUTER_API_KEY"],
 )
 dspy.configure(lm=task_lm)
+
+# LOAD DATA: 160 samples
+df = pd.read_csv("train/eng.csv")
+LABELS = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+df[LABELS] = df[LABELS].fillna(0)
+
+# SAME 160 samples 
+df_sample = df.sample(160, random_state=42)
+
+# Split for MIPRO: train (110) and val (50)
+train_df = df_sample.iloc[:110]
+val_df   = df_sample.iloc[110:]
+print(f"Total samples : 160")
+print(f"MIPRO Train   : {len(train_df)}")
+print(f"MIPRO Val     : {len(val_df)}")
+
+# DSPy DATA FORMAT
+def to_examples(dataframe):
+    examples = []
+    for _, row in dataframe.iterrows():
+        examples.append(
+            dspy.Example(
+                text=row["text"],
+                labels={l: int(row[l]) for l in LABELS},
+            ).with_inputs("text")
+        )
+    return examples
+trainset = to_examples(train_df)
+valset   = to_examples(val_df)
