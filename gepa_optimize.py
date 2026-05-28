@@ -247,16 +247,40 @@ BASELINE_PROMPT = """Classify this sentence.
 Labels: political, racial_ethnic, religious, gender_sexual, other.
 Return 0 or 1 for each."""
 
-print("\n===== EVALUATING BASELINE PROMPT ON 160 SAMPLES =====")
+print("\n EVALUATING BASELINE PROMPT ON 160 SAMPLES ")
 baseline_exact, baseline_f1 = run_evaluation(
     BASELINE_PROMPT,
     results_file="baseline_results.csv",
     label="Baseline"
 )
 
+# EVALUATE OPTIMIZED PROMPT ON 160 SAMPLES
+print("\n EVALUATING GEPA OPTIMIZED PROMPT ON 160 SAMPLES ")
 
+if os.path.exists("gepa_results.csv"):
+    os.remove("gepa_results.csv")
 
+gepa_exact, gepa_f1 = run_evaluation(
+    OPTIMIZED_PROMPT,
+    results_file="gepa_results.csv",
+    label="GEPA Optimized"
+)
 
+# FINAL COMPARISON
+print("\n" + "="*60)
+print(" FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print("="*60)
+print(f"{'Metric':<30} {'Baseline':>12} {'GEPA Optimized':>15}")
+print("-"*60)
+print(f"{'Exact-match Accuracy':<30} {baseline_exact*100:>11.2f}% {gepa_exact*100:>14.2f}%")
+print(f"{'Macro-F1 (%)':<30} {baseline_f1*100:>11.2f}% {gepa_f1*100:>14.2f}%")
+print("="*60)
+
+improvement = (gepa_f1 - baseline_f1) * 100
+if improvement > 0:
+    print(f" GEPA improved Macro-F1 by +{improvement:.2f}%")
+else:
+    print(f" No improvement: {improvement:.2f}%")
 
 
 
