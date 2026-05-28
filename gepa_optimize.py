@@ -78,3 +78,28 @@ class PolarizationSignature(dspy.Signature):
     religious     = dspy.OutputField(desc="0 or 1")
     gender_sexual = dspy.OutputField(desc="0 or 1")
     other         = dspy.OutputField(desc="0 or 1")
+
+class PolarizationProgram(dspy.Module):
+    def __init__(self):
+        super().__init__()
+        self.predict = dspy.Predict(PolarizationSignature)
+
+    def forward(self, text):
+        result = self.predict(text=text)
+        for field in ["political", "racial_ethnic", "religious", "gender_sexual", "other"]:
+            try:
+                val = getattr(result, field)
+                if isinstance(val, str):
+                    val = val.strip()
+                    if val.lower() in ['0', 'no', 'false', 'none']:
+                        setattr(result, field, 0)
+                    elif val.lower() in ['1', 'yes', 'true']:
+                        setattr(result, field, 1)
+                    else:
+                        setattr(result, field, int(float(val)))
+                else:
+                    setattr(result, field, int(val))
+            except:
+                setattr(result, field, 0)
+        return result
+program = PolarizationProgram()
