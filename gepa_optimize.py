@@ -134,3 +134,33 @@ def eval_metric(example, prediction, trace=None):
         return f1_score([y_true], [y_pred], average="macro", zero_division=0)
     except:
         return 0.0
+
+# MIPRO OPTIMIZATION
+print("\n STARTING MIPRO OPTIMIZATION ")
+print("Task model      : google/gemma-3-27b-it")
+print("Reflection model: meta-llama/llama-3.3-70b-instruct")
+
+optimizer = MIPROv2(
+    metric=eval_metric,
+    prompt_model=prompt_lm,
+    task_model=task_lm,
+    auto="heavy",        # more thorough optimization
+    init_temperature=0.7,
+    verbose=True,
+)
+
+optimized_program = optimizer.compile(
+    student=program,
+    trainset=trainset,
+    max_bootstrapped_demos=0,
+    max_labeled_demos=0,
+)
+
+# Extract optimized prompt
+OPTIMIZED_PROMPT = optimized_program.predict.signature.instructions
+
+print("\n" + "="*60)
+print(" OPTIMIZED PROMPT (AFTER MIPRO)")
+print("="*60)
+print(OPTIMIZED_PROMPT)
+print("="*60)
