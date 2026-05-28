@@ -214,10 +214,35 @@ Return ONLY a JSON object:
             raw = call_gemma(prompt, temperature=0.1)
             pred = relaxed_parse(raw)
 
+ results.append({
+                "pred_political":     pred["political"],
+                "pred_racial/ethnic": pred["racial/ethnic"],
+                "pred_religious":     pred["religious"],
+                "pred_gender/sexual": pred["gender/sexual"], 
+                "pred_other":         pred["other"],
 
+                "true_political":     row["political"],
+                "true_racial/ethnic": row["racial/ethnic"],
+                "true_religious":     row["religious"],
+                "true_gender/sexual": row["gender/sexual"],
+                "true_other":         row["other"],
+            })
+            time.sleep(0.3)
 
+        pred_df = pd.DataFrame(results)
+        pred_df.to_csv(results_file, index=False)
+        print(f"Results saved to {results_file}")
 
+    y_true = pred_df[["true_political", "true_racial/ethnic", "true_religious",n"true_gender/sexual", "true_other"]].values
 
+    y_pred = pred_df[["pred_political", "pred_racial/ethnic", "pred_religious", "pred_gender/sexual", "pred_other"]].values
+
+    exact_match = (y_true == y_pred).all(axis=1).mean()
+    macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
+
+    return exact_match, macro_f1
+
+# EVALUATE BASELINE ON 160 SAMPLES
 
 
 
