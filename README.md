@@ -95,11 +95,16 @@ Full evaluation with macro-F1, per-label F1, exact-match accuracy, 95% bootstrap
 ```bash
 git clone https://github.com/yourusername/polarisation-classification.git
 cd polarisation-classification
+from google.colab import drive
+drive.mount("/content/gdrive")
+cd '/content/gdrive/My Drive/Colab Notebooks/On Device AI models for Child Safety'
 ```
 
 **2. Install dependencies**
 ```bash
 pip install -r requirements.txt
+!pip install pandas numpy requests tqdm scikit-learn python-dotenv
+!pip install -q gepa requests scikit-learn tqdm pandas numpy
 ```
 
 **3. Set API key**
