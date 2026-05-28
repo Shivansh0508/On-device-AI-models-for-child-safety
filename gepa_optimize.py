@@ -103,3 +103,34 @@ class PolarizationProgram(dspy.Module):
                 setattr(result, field, 0)
         return result
 program = PolarizationProgram()
+
+# MIPRO METRIC
+def eval_metric(example, prediction, trace=None):
+    try:
+        label_map = {
+            "political":     "political",
+            "racial/ethnic": "racial_ethnic",
+            "religious":     "religious",
+            "gender/sexual": "gender_sexual",
+            "other":         "other"
+        }
+        y_true, y_pred = [], []
+        for csv_label, pred_field in label_map.items():
+            y_true.append(int(example["labels"][csv_label]))
+            try:
+                val = getattr(prediction, pred_field)
+                if isinstance(val, str):
+                    val = val.strip()
+                    if val.lower() in ['0', 'no', 'false', 'none']:
+                        y_pred.append(0)
+                    elif val.lower() in ['1', 'yes', 'true']:
+                        y_pred.append(1)
+                    else:
+                        y_pred.append(int(float(val)))
+                else:
+                    y_pred.append(int(val))
+            except:
+                y_pred.append(0)
+        return f1_score([y_true], [y_pred], average="macro", zero_division=0)
+    except:
+        return 0.0
