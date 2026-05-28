@@ -65,3 +65,16 @@ def to_examples(dataframe):
     return examples
 trainset = to_examples(train_df)
 valset   = to_examples(val_df)
+
+# BASELINE SIGNATURE — same/simple prompt
+class PolarizationSignature(dspy.Signature):
+    """Classify this sentence.
+    Labels: political, racial_ethnic, religious, gender_sexual, other.
+    Return 0 or 1 for each."""
+
+    text          = dspy.InputField()
+    political     = dspy.OutputField(desc="0 or 1")
+    racial_ethnic = dspy.OutputField(desc="0 or 1")
+    religious     = dspy.OutputField(desc="0 or 1")
+    gender_sexual = dspy.OutputField(desc="0 or 1")
+    other         = dspy.OutputField(desc="0 or 1")
