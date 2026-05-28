@@ -194,8 +194,25 @@ def call_gemma(prompt, temperature=0.1, max_retries=5):
             else:
                 raise e
     raise RuntimeError(" OpenRouter failed after multiple retries")
+    
+def run_evaluation(prompt_template, results_file, label=""):
+    """Run inference on all 160 samples and evaluate with sklearn"""
 
+    if os.path.exists(results_file):
+        print(f" Loading saved {label} results...")
+        pred_df = pd.read_csv(results_file)
+    else:
+        print(f" Running {label} inference on 160 samples...")
+        results = []
 
+        for _, row in tqdm(df_sample.iterrows(), total=len(df_sample)):
+            prompt = prompt_template + f"""
+
+Sentence: {row['text']}
+Return ONLY a JSON object:
+{{"political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0}}"""
+            raw = call_gemma(prompt, temperature=0.1)
+            pred = relaxed_parse(raw)
 
 
 
