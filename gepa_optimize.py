@@ -164,3 +164,123 @@ print(" OPTIMIZED PROMPT (AFTER MIPRO)")
 print("="*60)
 print(OPTIMIZED_PROMPT)
 print("="*60)
+
+# SKLEARN EVALUATION FUNCTION
+label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+
+def call_gemma(prompt, temperature=0.1, max_retries=5):
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "SemEval-Polarization-GEPA"
+    }
+    payload = {
+        "model": "google/gemma-3-27b-it",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature
+    }
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=60)
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
+        except requests.exceptions.HTTPError as e:
+            if response.status_code >= 500:
+                wait = 2 ** attempt
+                print(f" Server error {response.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise e
+    raise RuntimeError(" OpenRouter failed after multiple retries")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
