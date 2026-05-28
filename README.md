@@ -102,7 +102,7 @@ cd '/content/gdrive/My Drive/Colab Notebooks/On Device AI models for Child Safet
 
 **2. Install dependencies**
 ```bash
-pip install -r requirements.txt
+!pip install -r requirements.txt
 !pip install pandas numpy requests tqdm scikit-learn python-dotenv
 !pip install -q gepa requests scikit-learn tqdm pandas numpy
 ```
