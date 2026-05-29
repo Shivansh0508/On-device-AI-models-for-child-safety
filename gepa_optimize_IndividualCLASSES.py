@@ -402,10 +402,7 @@ for label, prompt in optimized_prompts.items():
     print(f"\n--- {label.upper()} ---")
     print(prompt)
     
-    # ============================================================
-# STEP 2: FULL EVALUATION FUNCTION
-# ============================================================
-
+# FULL EVALUATION FUNCTION
 def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
     if os.path.exists(results_file):
         print(f"Loading saved results from {results_file}...")
@@ -424,7 +421,7 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
                 )
                 raw          = call_llama(prompt, temperature=0.1)
                 preds[label] = parse_binary(raw)
-                time.sleep(0.15)  # small sleep between calls
+                time.sleep(0.15) 
                 results.append({
                 "pred_political":     preds["political"],
                 "pred_racial/ethnic": preds["racial/ethnic"],
@@ -439,7 +436,7 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
                 "true_other":         int(row["other"]),
             })
 
-            # Save every 20 samples — prevents data loss on interruption
+            # Save every 20 samples ; prevents data loss on interruption
             if (idx + 1) % 20 == 0:
                 pd.DataFrame(results).to_csv(results_file + ".partial", index=False)
                 print(f"  Partial save at {idx+1}/160")
@@ -460,38 +457,26 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
     macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
     return exact_match, macro_f1
 
-# ============================================================
-# STEP 3: EVALUATE BASELINE — weak prompts, no few-shot
-# ============================================================
-
-print("\n===== EVALUATING BASELINE PROMPTS ON 160 SAMPLES =====")
+# EVALUATE BASELINE ; weak prompts, no few-shot
+print("\n EVALUATING BASELINE PROMPTS ON 160 SAMPLES ")
 baseline_exact, baseline_f1 = run_pipeline4_evaluation(
     BASELINE_PROMPTS,
     results_file="p4_baseline_results.csv",
     use_few_shot=False
 )
 
-# ============================================================
-# STEP 4: EVALUATE GEPA OPTIMIZED — strong prompts + few-shot
-# ============================================================
-
+# EVALUATE GEPA OPTIMIZED — strong prompts + few-shot
 print("\n EVALUATING GEPA OPTIMIZED PROMPTS ON 160 SAMPLES ")
-
 if os.path.exists("p4_gepa_results.csv"):
     os.remove("p4_gepa_results.csv")
-
 gepa_exact, gepa_f1 = run_pipeline4_evaluation(
     optimized_prompts,
     results_file="p4_gepa_results.csv",
     use_few_shot=True
 )
 
-# ============================================================
-# STEP 5: FINAL COMPARISON
-# ============================================================
-
+# FINAL COMPARISON
 PIPELINE1_BASELINE_F1 = 0.3975
-
 print("\n" + "="*60)
 print(" FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
 print("="*60)
