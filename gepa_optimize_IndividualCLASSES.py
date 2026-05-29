@@ -170,24 +170,24 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
  except requests.exceptions.ReadTimeout:
             # ← explicitly catch timeout and retry
             wait = 2 ** attempt
-            print(f"⚠️ Timeout on attempt {attempt+1}/{max_retries}, retrying in {wait}s...")
+            print(f" Timeout on attempt {attempt+1}/{max_retries}, retrying in {wait}s...")
             time.sleep(wait)
 
         except requests.exceptions.HTTPError as e:
             if response.status_code >= 500:
                 wait = 2 ** attempt
-                print(f"⚠️ Server error {response.status_code}, retrying in {wait}s...")
+                print(f" Server error {response.status_code}, retrying in {wait}s...")
                 time.sleep(wait)
             else:
                 raise e
 
         except requests.exceptions.ConnectionError:
             wait = 2 ** attempt
-            print(f"⚠️ Connection error, retrying in {wait}s...")
+            print(f" Connection error, retrying in {wait}s...")
             time.sleep(wait)
 
     # If all retries failed — return empty string instead of crashing
-    print(f"❌ All {max_retries} attempts failed — returning default 0")
+    print(f" All {max_retries} attempts failed — returning default 0")
     return "0"
 
 # ============================================================
@@ -205,7 +205,7 @@ def get_balanced_sample(dataframe, label, sample_size=30):
     print(f"  Label {label}: {len(positives)} positives available, sampling {n_pos}")
 
     if len(positives) == 0:
-        print(f"  ⚠️ No positives for {label} — using random sample")
+        print(f"  No positives for {label} — using random sample")
         return dataframe.sample(min(sample_size, len(dataframe)), random_state=SEED)
 
     pos_sample = positives.sample(min(n_pos, len(positives)), random_state=SEED)
@@ -348,7 +348,7 @@ Return ONLY the new improved prompt instruction. No explanation."""
 
 def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
     print(f"\n{'='*60}")
-    print(f"🚀 GEPA for label: {label.upper()}")
+    print(f" GEPA for label: {label.upper()}")
     print(f"Starting from: {initial_prompt[:80]}...")
     print(f"{'='*60}")
 
@@ -379,7 +379,7 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
         if score > best_score:
             best_score  = score
             best_prompt = current_prompt
-            print(f"✅ New best for {label}: {best_score*100:.2f}%")
+            print(f" New best for {label}: {best_score*100:.2f}%")
 
         history.append({"iteration": iteration, "score": score, "prompt": current_prompt})
 
@@ -389,24 +389,24 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
             for i in range(len(texts))
             if y_true_all[i] != y_pred_all[i]
         ]
-        print(f"❌ Failures: {len(failure_cases)}/{sample_size}")
+        print(f"Failures: {len(failure_cases)}/{sample_size}")
 
         if len(failure_cases) == 0:
-            print(f"🎉 Perfect score for {label}!")
+            print(f"Perfect score for {label}!")
             break
 
         if iteration == iterations:
             break
             
             # Step 2: Claude Haiku reflects
-        print(f"🤔 Claude Haiku reflecting on {label} failures...")
+        print(f" Claude Haiku reflecting on {label} failures...")
         new_prompt = gepa_reflect_single(
             current_prompt, label, failure_cases, score, iteration
         )
-        print(f"✨ New prompt: {new_prompt[:150]}...")
+        print(f" New prompt: {new_prompt[:150]}...")
         current_prompt = new_prompt
 
-    print(f"\n📈 {label.upper()} History:")
+    print(f"\n {label.upper()} History:")
     for h in history:
         marker = " ← best" if h['score'] == best_score else ""
         print(f"  Iter {h['iteration']}: {h['score']*100:.2f}%{marker}")
@@ -418,7 +418,7 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
 # ============================================================
 
 print("\n" + "="*60)
-print("🚀 PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION")
+print(" PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION")
 print("Task model      : LLaMA 3.3 70B")
 print("Reflection model: Claude Haiku")
 print("Labels          : 5 individual optimizations")
@@ -442,10 +442,10 @@ for label in LABELS:
 # Save after each label — in case of interruption
     with open(f"p4_prompt_{label.replace('/', '_')}.txt", "w") as f:
         f.write(opt_prompt)
-    print(f"✅ Saved prompt for {label}")
+    print(f" Saved prompt for {label}")
 
 print("\n" + "="*60)
-print("✨ ALL OPTIMIZED PROMPTS")
+print(" ALL OPTIMIZED PROMPTS")
 print("="*60)
 for label, prompt in optimized_prompts.items():
     print(f"\n--- {label.upper()} ---")
@@ -457,10 +457,10 @@ for label, prompt in optimized_prompts.items():
 
 def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
     if os.path.exists(results_file):
-        print(f"✅ Loading saved results from {results_file}...")
+        print(f"Loading saved results from {results_file}...")
         pred_df = pd.read_csv(results_file)
     else:
-        print(f"🔄 Running Pipeline 4 on {len(df_sample)} samples...")
+        print(f" Running Pipeline 4 on {len(df_sample)} samples...")
         results = []
 
         for idx, (_, row) in enumerate(tqdm(
@@ -491,11 +491,11 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
             # Save every 20 samples — prevents data loss on interruption
             if (idx + 1) % 20 == 0:
                 pd.DataFrame(results).to_csv(results_file + ".partial", index=False)
-                print(f"  💾 Partial save at {idx+1}/160")
+                print(f"  Partial save at {idx+1}/160")
 
         pred_df = pd.DataFrame(results)
         pred_df.to_csv(results_file, index=False)
-        print(f"✅ Saved to {results_file}")
+        print(f" Saved to {results_file}")
          y_true = pred_df[
         ["true_political", "true_racial/ethnic", "true_religious",
          "true_gender/sexual", "true_other"]
@@ -524,7 +524,7 @@ baseline_exact, baseline_f1 = run_pipeline4_evaluation(
 # STEP 4: EVALUATE GEPA OPTIMIZED — strong prompts + few-shot
 # ============================================================
 
-print("\n===== EVALUATING GEPA OPTIMIZED PROMPTS ON 160 SAMPLES =====")
+print("\n EVALUATING GEPA OPTIMIZED PROMPTS ON 160 SAMPLES ")
 
 if os.path.exists("p4_gepa_results.csv"):
     os.remove("p4_gepa_results.csv")
@@ -542,7 +542,7 @@ gepa_exact, gepa_f1 = run_pipeline4_evaluation(
 PIPELINE1_BASELINE_F1 = 0.3975
 
 print("\n" + "="*60)
-print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print(" FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
 print("="*60)
 print(f"{'Metric':<30} {'Pipeline 1':>12} {'P4 Baseline':>12} {'P4 GEPA':>12}")
 print("-"*70)
@@ -553,12 +553,12 @@ print("="*70)
 improvement_vs_p1     = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
 improvement_vs_p4base = (gepa_f1 - baseline_f1) * 100
 if improvement_vs_p1 > 0:
-    print(f"✅ GEPA improved vs Pipeline 1 by +{improvement_vs_p1:.2f}%")
+    print(f" GEPA improved vs Pipeline 1 by +{improvement_vs_p1:.2f}%")
 else:
-    print(f"❌ No improvement vs Pipeline 1: {improvement_vs_p1:.2f}%")
+    print(f" No improvement vs Pipeline 1: {improvement_vs_p1:.2f}%")
 
 if improvement_vs_p4base > 0:
-    print(f"✅ GEPA improved vs P4 baseline by +{improvement_vs_p4base:.2f}%")
+    print(f" GEPA improved vs P4 baseline by +{improvement_vs_p4base:.2f}%")
     
     # ============================================================
 # STEP 6: SAVE ALL RESULTS
@@ -592,4 +592,4 @@ with open("pipeline4_optimized_prompts.txt", "w") as f:
     f.write(f"Improvement vs P1   : {improvement_vs_p1:+.2f}%\n")
     f.write(f"Improvement vs P4   : {improvement_vs_p4base:+.2f}%\n")
 
-print("✅ Saved to: pipeline4_optimized_prompts.txt")
+print(" Saved to: pipeline4_optimized_prompts.txt")
