@@ -508,3 +508,14 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
     exact_match = (y_true == y_pred).all(axis=1).mean()
     macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
     return exact_match, macro_f1
+
+# ============================================================
+# STEP 3: EVALUATE BASELINE — weak prompts, no few-shot
+# ============================================================
+
+print("\n===== EVALUATING BASELINE PROMPTS ON 160 SAMPLES =====")
+baseline_exact, baseline_f1 = run_pipeline4_evaluation(
+    BASELINE_PROMPTS,
+    results_file="p4_baseline_results.csv",
+    use_few_shot=False
+)
