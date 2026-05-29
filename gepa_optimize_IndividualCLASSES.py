@@ -496,10 +496,7 @@ else:
 if improvement_vs_p4base > 0:
     print(f" GEPA improved vs P4 baseline by +{improvement_vs_p4base:.2f}%")
     
-    # ============================================================
 # STEP 6: SAVE ALL RESULTS
-# ============================================================
-
 with open("pipeline4_optimized_prompts.txt", "w") as f:
     f.write("="*60 + "\n")
     f.write("PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION\n")
