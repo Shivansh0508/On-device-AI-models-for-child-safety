@@ -326,3 +326,18 @@ YOUR TASK:
 1. Analyze whether the model is over-predicting or under-predicting {label.upper()}
 2. Identify the specific patterns causing errors
 3. Rewrite the prompt to fix these errors
+REQUIREMENTS for new prompt:
+- Give CLEAR definition of what IS {label.upper()}=1
+- Give CLEAR definition of what IS NOT {label.upper()}=1
+- If too many False Negatives: make the definition broader, more sensitive
+- If too many False Positives: make the definition stricter, more precise
+- Be explicit: merely MENTIONING a topic is NOT polarizing
+- The text must express BIAS, HATRED or STRONG NEGATIVE STEREOTYPES to be 1
+- Do NOT include few-shot examples (added separately)
+- Do NOT include "Return 0 or 1" (added separately)
+- Do NOT include sentence placeholder (added separately)
+
+Return ONLY the new improved prompt instruction. No explanation."""
+
+    new_prompt = call_haiku(reflection_prompt, temperature=0.7)
+    return new_prompt.strip()
