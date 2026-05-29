@@ -24,3 +24,8 @@ GEPA_SAMPLE     = 30
 # ============================================================
 
 os.environ["OPENROUTER_API_KEY"] = getpass.getpass("Enter OpenRouter API key: ")
+# ============================================================
+# FEW-SHOT EXAMPLES WITH REASONING + SELF-CORRECTION
+# ============================================================
+
+FEW_SHOT_WITH_REASONING = [
