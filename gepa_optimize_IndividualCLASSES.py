@@ -559,3 +559,26 @@ else:
 
 if improvement_vs_p4base > 0:
     print(f"✅ GEPA improved vs P4 baseline by +{improvement_vs_p4base:.2f}%")
+    
+    # ============================================================
+# STEP 6: SAVE ALL RESULTS
+# ============================================================
+
+with open("pipeline4_optimized_prompts.txt", "w") as f:
+    f.write("="*60 + "\n")
+    f.write("PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION\n")
+    f.write("Task Model      : meta-llama/llama-3.3-70b-instruct\n")
+    f.write("Reflection Model: anthropic/claude-3-haiku\n")
+    f.write("GEPA Iterations : 5 per label\n")
+    f.write("="*60 + "\n\n")
+
+    for label in LABELS:
+        f.write(f"{'='*40}\n")
+        f.write(f"LABEL: {label.upper()}\n")
+        f.write(f"{'='*40}\n")
+        f.write(f"Baseline Prompt:\n{BASELINE_PROMPTS[label]}\n\n")
+        f.write(f"Optimized Prompt:\n{optimized_prompts[label]}\n\n")
+        f.write(f"GEPA History:\n")
+        for h in all_histories[label]:
+            f.write(f"  Iter {h['iteration']}: {h['score']*100:.2f}%\n")
+        f.write(f"Best Binary F1 : {best_scores[label]*100:.2f}%\n\n")
