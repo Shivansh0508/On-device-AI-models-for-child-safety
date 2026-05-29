@@ -125,3 +125,15 @@ df_sample  = df.sample(160, random_state=42)
 df_gepa    = df.sample(500, random_state=42)
 gepa_train = df_gepa.iloc[:450]
 gepa_val   = df_gepa.iloc[450:500]
+
+print(f"GEPA Reflection Pool : {len(gepa_train)}")
+print(f"GEPA Val             : {len(gepa_val)}")
+print(f"Final Eval           : {len(df_sample)} samples")
+
+# Print label distribution
+print("\nLabel distribution in GEPA pool:")
+for label in LABELS:
+    pos = int((gepa_train[label] == 1).sum())
+    print(f"  {label:<20}: {pos}/{len(gepa_train)} positive ({pos/len(gepa_train)*100:.1f}%)")
+
+label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
