@@ -413,3 +413,28 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
 
     return best_prompt, best_score, history
 
+# ============================================================
+# STEP 1: RUN GEPA FOR ALL 5 LABELS
+# ============================================================
+
+print("\n" + "="*60)
+print("🚀 PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION")
+print("Task model      : LLaMA 3.3 70B")
+print("Reflection model: Claude Haiku")
+print("Labels          : 5 individual optimizations")
+print("="*60)
+
+optimized_prompts = {}
+best_scores       = {}
+all_histories     = {}
+
+for label in LABELS:
+    opt_prompt, best_score, history = run_gepa_single_label(
+        label=label,
+        initial_prompt=BASELINE_PROMPTS[label],
+        iterations=GEPA_ITERATIONS,
+        sample_size=GEPA_SAMPLE,
+    )
+    optimized_prompts[label] = opt_prompt
+    best_scores[label]       = best_score
+    all_histories[label]     = history
