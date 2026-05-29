@@ -19,3 +19,8 @@ np.random.seed(SEED)
 
 GEPA_ITERATIONS = 5
 GEPA_SAMPLE     = 30
+# ============================================================
+# OPENROUTER SETUP
+# ============================================================
+
+os.environ["OPENROUTER_API_KEY"] = getpass.getpass("Enter OpenRouter API key: ")
