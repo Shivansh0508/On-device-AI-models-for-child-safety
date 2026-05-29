@@ -18,16 +18,10 @@ np.random.seed(SEED)
 GEPA_ITERATIONS = 5
 GEPA_SAMPLE     = 30
 
-# ============================================================
 # OPENROUTER SETUP
-# ============================================================
-
 os.environ["OPENROUTER_API_KEY"] = getpass.getpass("Enter OpenRouter API key: ")
 
-# ============================================================
 # FEW-SHOT EXAMPLES — per label
-# ============================================================
-
 FEW_SHOT_PER_LABEL = {
 
     "political": [
@@ -84,10 +78,7 @@ FEW_SHOT_PER_LABEL = {
     ],
 }
 
-# ============================================================
 # BASELINE PROMPTS — enhanced for rare labels
-# ============================================================
-
 BASELINE_PROMPTS = {
     "political": "Is this sentence politically polarizing? Return 0 or 1.",
 
@@ -109,10 +100,7 @@ Examples of 0: "The economy grew this quarter", "Scientists published new findin
 Return 1 if polarizing in other way, 0 if not.""",
 }
 
-# ============================================================
 # LOAD DATA
-# ============================================================
-
 df = pd.read_csv("train/eng.csv")
 
 LABELS = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
@@ -121,11 +109,10 @@ df[LABELS] = df[LABELS].fillna(0)
 # SAME 160 fixed samples as all pipelines
 df_sample  = df.sample(160, random_state=42)
 
-# Larger pool for GEPA — 500 samples for better rare label coverage
+# Larger pool for GEPA; 500 samples for better rare label coverage
 df_gepa    = df.sample(500, random_state=42)
 gepa_train = df_gepa.iloc[:450]
 gepa_val   = df_gepa.iloc[450:500]
-
 print(f"GEPA Reflection Pool : {len(gepa_train)}")
 print(f"GEPA Val             : {len(gepa_val)}")
 print(f"Final Eval           : {len(df_sample)} samples")
@@ -135,13 +122,9 @@ print("\nLabel distribution in GEPA pool:")
 for label in LABELS:
     pos = int((gepa_train[label] == 1).sum())
     print(f"  {label:<20}: {pos}/{len(gepa_train)} positive ({pos/len(gepa_train)*100:.1f}%)")
-
 label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
 
-# ============================================================
 # API CALLS
-# ============================================================
-
 def call_model(prompt, model, temperature=0.1, max_retries=5):
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
@@ -162,13 +145,13 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
                 url,
                 headers=headers,
                 json=payload,
-                timeout=120   # ← increase from 60 to 120 seconds
+                timeout=120 
             )
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
 
  except requests.exceptions.ReadTimeout:
-            # ← explicitly catch timeout and retry
+            # explicitly catch timeout and retry
             wait = 2 ** attempt
             print(f" Timeout on attempt {attempt+1}/{max_retries}, retrying in {wait}s...")
             time.sleep(wait)
@@ -190,15 +173,11 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
     print(f" All {max_retries} attempts failed — returning default 0")
     return "0"
 
-# ============================================================
 # BALANCED SAMPLING — fixes rare label problem
-# ============================================================
-
 def get_balanced_sample(dataframe, label, sample_size=30):
     """Ensure positive examples exist in reflection sample"""
     positives = dataframe[dataframe[label] == 1]
     negatives = dataframe[dataframe[label] == 0]
-
     n_pos = min(len(positives), max(8, sample_size // 3))
     n_neg = sample_size - n_pos
 
@@ -213,10 +192,7 @@ def get_balanced_sample(dataframe, label, sample_size=30):
     balanced   = pd.concat([pos_sample, neg_sample]).sample(frac=1, random_state=SEED)
     return balanced.reset_index(drop=True)
 
-# ============================================================
 # PARSERS
-# ============================================================
-
 def parse_binary(output):
     try:
         output = output.strip().lower()
@@ -236,10 +212,7 @@ def parse_binary(output):
         pass
     return 0
 
-# ============================================================
 # BUILD SINGLE-LABEL PROMPT WITH FEW-SHOT
-# ============================================================
-
 def build_single_label_prompt(instruction, text, label, use_few_shot=True):
     few_shot_block = ""
     if use_few_shot and label in FEW_SHOT_PER_LABEL:
