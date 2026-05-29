@@ -496,3 +496,15 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
         pred_df = pd.DataFrame(results)
         pred_df.to_csv(results_file, index=False)
         print(f"✅ Saved to {results_file}")
+         y_true = pred_df[
+        ["true_political", "true_racial/ethnic", "true_religious",
+         "true_gender/sexual", "true_other"]
+    ].values
+    y_pred = pred_df[
+        ["pred_political", "pred_racial/ethnic", "pred_religious",
+         "pred_gender/sexual", "pred_other"]
+    ].values
+
+    exact_match = (y_true == y_pred).all(axis=1).mean()
+    macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
+    return exact_match, macro_f1
