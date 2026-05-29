@@ -108,3 +108,20 @@ Examples of 1: "Boomers ruined everything", "The poor deserve to suffer", "South
 Examples of 0: "The economy grew this quarter", "Scientists published new findings"
 Return 1 if polarizing in other way, 0 if not.""",
 }
+
+# ============================================================
+# LOAD DATA
+# ============================================================
+
+df = pd.read_csv("train/eng.csv")
+
+LABELS = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+df[LABELS] = df[LABELS].fillna(0)
+
+# SAME 160 fixed samples as all pipelines
+df_sample  = df.sample(160, random_state=42)
+
+# Larger pool for GEPA — 500 samples for better rare label coverage
+df_gepa    = df.sample(500, random_state=42)
+gepa_train = df_gepa.iloc[:450]
+gepa_val   = df_gepa.iloc[450:500]
