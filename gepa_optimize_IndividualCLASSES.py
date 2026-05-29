@@ -581,4 +581,15 @@ with open("pipeline4_optimized_prompts.txt", "w") as f:
         f.write(f"GEPA History:\n")
         for h in all_histories[label]:
             f.write(f"  Iter {h['iteration']}: {h['score']*100:.2f}%\n")
-        f.write(f"Best Binary F1 : {best_scores[label]*100:.2f}%\n\n")
+            
+    f.write(f"Best Binary F1 : {best_scores[label]*100:.2f}%\n\n")
+    f.write("="*60 + "\n")
+    f.write("FINAL PERFORMANCE\n")
+    f.write("="*60 + "\n")
+    f.write(f"Pipeline 1 Baseline : {PIPELINE1_BASELINE_F1*100:.2f}%\n")
+    f.write(f"Pipeline 4 Baseline : {baseline_f1*100:.2f}%\n")
+    f.write(f"Pipeline 4 GEPA     : {gepa_f1*100:.2f}%\n")
+    f.write(f"Improvement vs P1   : {improvement_vs_p1:+.2f}%\n")
+    f.write(f"Improvement vs P4   : {improvement_vs_p4base:+.2f}%\n")
+
+print("✅ Saved to: pipeline4_optimized_prompts.txt")
