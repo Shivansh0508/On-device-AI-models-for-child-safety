@@ -397,4 +397,19 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
 
         if iteration == iterations:
             break
+            
+            # Step 2: Claude Haiku reflects
+        print(f"🤔 Claude Haiku reflecting on {label} failures...")
+        new_prompt = gepa_reflect_single(
+            current_prompt, label, failure_cases, score, iteration
+        )
+        print(f"✨ New prompt: {new_prompt[:150]}...")
+        current_prompt = new_prompt
+
+    print(f"\n📈 {label.upper()} History:")
+    for h in history:
+        marker = " ← best" if h['score'] == best_score else ""
+        print(f"  Iter {h['iteration']}: {h['score']*100:.2f}%{marker}")
+
+    return best_prompt, best_score, history
 
