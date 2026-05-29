@@ -438,3 +438,15 @@ for label in LABELS:
     optimized_prompts[label] = opt_prompt
     best_scores[label]       = best_score
     all_histories[label]     = history
+    
+# Save after each label — in case of interruption
+    with open(f"p4_prompt_{label.replace('/', '_')}.txt", "w") as f:
+        f.write(opt_prompt)
+    print(f"✅ Saved prompt for {label}")
+
+print("\n" + "="*60)
+print("✨ ALL OPTIMIZED PROMPTS")
+print("="*60)
+for label, prompt in optimized_prompts.items():
+    print(f"\n--- {label.upper()} ---")
+    print(prompt)
