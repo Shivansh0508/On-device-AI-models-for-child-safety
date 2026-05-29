@@ -474,3 +474,25 @@ def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
                 raw          = call_llama(prompt, temperature=0.1)
                 preds[label] = parse_binary(raw)
                 time.sleep(0.15)  # small sleep between calls
+                results.append({
+                "pred_political":     preds["political"],
+                "pred_racial/ethnic": preds["racial/ethnic"],
+                "pred_religious":     preds["religious"],
+                "pred_gender/sexual": preds["gender/sexual"],
+                "pred_other":         preds["other"],
+
+                "true_political":     int(row["political"]),
+                "true_racial/ethnic": int(row["racial/ethnic"]),
+                "true_religious":     int(row["religious"]),
+                "true_gender/sexual": int(row["gender/sexual"]),
+                "true_other":         int(row["other"]),
+            })
+
+            # Save every 20 samples — prevents data loss on interruption
+            if (idx + 1) % 20 == 0:
+                pd.DataFrame(results).to_csv(results_file + ".partial", index=False)
+                print(f"  💾 Partial save at {idx+1}/160")
+
+        pred_df = pd.DataFrame(results)
+        pred_df.to_csv(results_file, index=False)
+        print(f"✅ Saved to {results_file}")
