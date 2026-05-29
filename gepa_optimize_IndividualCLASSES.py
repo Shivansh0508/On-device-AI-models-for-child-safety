@@ -273,3 +273,31 @@ def evaluate_single_label(instruction, dataframe, label, use_few_shot=True, desc
 
     f1 = f1_score(y_true_all, y_pred_all, average="binary", zero_division=1)
     return f1, y_true_all, y_pred_all, texts
+
+# ============================================================
+# GEPA REFLECTION FOR SINGLE LABEL
+# ============================================================
+
+def gepa_reflect_single(current_prompt, label, failure_cases, current_score, iteration):
+    label_descriptions = {
+        "political":     "politically polarizing content — strong partisan bias, attacks on political groups, promotes political division",
+        "racial/ethnic": "racial or ethnic polarization — prejudice, stereotypes, hatred toward racial/ethnic groups, xenophobia",
+        "religious":     "religious polarization — attacks on or hatred toward religious groups or beliefs, religious intolerance",
+        "gender/sexual": "gender or sexual orientation polarization — sexism, homophobia, transphobia, gender-based hatred",
+        "other":         "other polarization — class-based hatred, ageism, regional hatred, general dehumanization not covered by other categories",
+    }
+
+    failure_text = ""
+    fp_count, fn_count = 0, 0
+    for i, (text, true, pred) in enumerate(failure_cases[:12]):
+        if pred > true:
+            error_type = "FALSE POSITIVE (predicted 1, true is 0 — model over-predicted)"
+            fp_count += 1
+        else:
+            error_type = "FALSE NEGATIVE (predicted 0, true is 1 — model missed it)"
+            fn_count += 1
+        failure_text += f"""
+Example {i+1} [{error_type}]:
+  Text      : {text}
+  True label: {true}
+  Predicted : {pred}
