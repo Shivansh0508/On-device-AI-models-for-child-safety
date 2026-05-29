@@ -301,3 +301,28 @@ Example {i+1} [{error_type}]:
   Text      : {text}
   True label: {true}
   Predicted : {pred}
+"""
+
+    reflection_prompt = f"""You are an expert NLP prompt engineer specializing in hate speech and polarization detection.
+
+You are optimizing a BINARY classifier prompt for LLaMA 3.3 70B.
+
+TARGET LABEL: {label.upper()}
+Definition: {label_descriptions[label]}
+
+CURRENT PROMPT (Iteration {iteration}):
+===
+{current_prompt}
+===
+
+CURRENT BINARY F1 SCORE: {current_score:.4f} ({current_score*100:.2f}%)
+False Positives: {fp_count} (model predicted 1 when true is 0)
+False Negatives: {fn_count} (model predicted 0 when true is 1)
+
+LLaMA made the following ERRORS:
+{failure_text}
+
+YOUR TASK:
+1. Analyze whether the model is over-predicting or under-predicting {label.upper()}
+2. Identify the specific patterns causing errors
+3. Rewrite the prompt to fix these errors
