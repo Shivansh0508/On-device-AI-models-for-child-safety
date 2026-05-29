@@ -341,3 +341,29 @@ Return ONLY the new improved prompt instruction. No explanation."""
 
     new_prompt = call_haiku(reflection_prompt, temperature=0.7)
     return new_prompt.strip()
+
+# ============================================================
+# GEPA LOOP FOR SINGLE LABEL
+# ============================================================
+
+def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
+    print(f"\n{'='*60}")
+    print(f"🚀 GEPA for label: {label.upper()}")
+    print(f"Starting from: {initial_prompt[:80]}...")
+    print(f"{'='*60}")
+
+    # Check label distribution
+    pos_count = int((gepa_train[label] == 1).sum())
+    print(f"Positive examples in pool: {pos_count}/{len(gepa_train)}")
+
+    current_prompt = initial_prompt
+    best_prompt    = initial_prompt
+    best_score     = 0.0
+    history        = []
+
+    # BALANCED sample — fixes 0.00% F1 for rare labels
+    reflection_df = get_balanced_sample(gepa_train, label, sample_size)
+
+    for iteration in range(1, iterations + 1):
+        print(f"\n--- {label.upper()} | Iteration {iteration}/{iterations} ---")
+
