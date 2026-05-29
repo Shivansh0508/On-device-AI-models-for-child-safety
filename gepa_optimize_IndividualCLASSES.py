@@ -253,3 +253,23 @@ def build_single_label_prompt(instruction, text, label, use_few_shot=True):
 Sentence: {text}
 
 Return ONLY 0 or 1. No explanation."""
+
+# ============================================================
+# EVALUATE SINGLE LABEL PROMPT
+# ============================================================
+
+def evaluate_single_label(instruction, dataframe, label, use_few_shot=True, desc=""):
+    y_true_all, y_pred_all, texts = [], [], []
+
+    for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=desc):
+        prompt = build_single_label_prompt(instruction, row["text"], label, use_few_shot)
+        raw    = call_llama(prompt, temperature=0.1)
+        pred   = parse_binary(raw)
+
+        y_true_all.append(int(row[label]))
+        y_pred_all.append(pred)
+        texts.append(row["text"])
+        time.sleep(0.2)
+
+    f1 = f1_score(y_true_all, y_pred_all, average="binary", zero_division=1)
+    return f1, y_true_all, y_pred_all, texts
