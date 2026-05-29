@@ -519,3 +519,18 @@ baseline_exact, baseline_f1 = run_pipeline4_evaluation(
     results_file="p4_baseline_results.csv",
     use_few_shot=False
 )
+
+# ============================================================
+# STEP 4: EVALUATE GEPA OPTIMIZED — strong prompts + few-shot
+# ============================================================
+
+print("\n===== EVALUATING GEPA OPTIMIZED PROMPTS ON 160 SAMPLES =====")
+
+if os.path.exists("p4_gepa_results.csv"):
+    os.remove("p4_gepa_results.csv")
+
+gepa_exact, gepa_f1 = run_pipeline4_evaluation(
+    optimized_prompts,
+    results_file="p4_gepa_results.csv",
+    use_few_shot=True
+)
