@@ -9,3 +9,13 @@ import json
 import re
 from tqdm import tqdm
 import getpass
+# ============================================================
+# CONFIG
+# ============================================================
+
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+
+GEPA_ITERATIONS = 5
+GEPA_SAMPLE     = 30
