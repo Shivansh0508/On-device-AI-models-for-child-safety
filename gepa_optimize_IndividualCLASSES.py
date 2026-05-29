@@ -534,3 +534,21 @@ gepa_exact, gepa_f1 = run_pipeline4_evaluation(
     results_file="p4_gepa_results.csv",
     use_few_shot=True
 )
+
+# ============================================================
+# STEP 5: FINAL COMPARISON
+# ============================================================
+
+PIPELINE1_BASELINE_F1 = 0.3975
+
+print("\n" + "="*60)
+print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print("="*60)
+print(f"{'Metric':<30} {'Pipeline 1':>12} {'P4 Baseline':>12} {'P4 GEPA':>12}")
+print("-"*70)
+print(f"{'Exact-match Accuracy':<30} {'N/A':>12} {baseline_exact*100:>11.2f}% {gepa_exact*100:>11.2f}%")
+print(f"{'Macro-F1 (%)':<30} {PIPELINE1_BASELINE_F1*100:>11.2f}% {baseline_f1*100:>11.2f}% {gepa_f1*100:>11.2f}%")
+print("="*70)
+
+improvement_vs_p1     = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
+improvement_vs_p4base = (gepa_f1 - baseline_f1) * 100
