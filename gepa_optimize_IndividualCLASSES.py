@@ -235,3 +235,21 @@ def parse_binary(output):
     except:
         pass
     return 0
+
+# ============================================================
+# BUILD SINGLE-LABEL PROMPT WITH FEW-SHOT
+# ============================================================
+
+def build_single_label_prompt(instruction, text, label, use_few_shot=True):
+    few_shot_block = ""
+    if use_few_shot and label in FEW_SHOT_PER_LABEL:
+        few_shot_block = "\n\nHere are some labeled examples:\n"
+        for ex in FEW_SHOT_PER_LABEL[label]:
+            few_shot_block += f"\nText: {ex['text']}\nAnswer: {ex['label']}\n"
+        few_shot_block += "\nNow classify the following:\n"
+
+    return instruction + few_shot_block + f"""
+
+Sentence: {text}
+
+Return ONLY 0 or 1. No explanation."""
