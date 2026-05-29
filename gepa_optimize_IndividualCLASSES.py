@@ -450,3 +450,27 @@ print("="*60)
 for label, prompt in optimized_prompts.items():
     print(f"\n--- {label.upper()} ---")
     print(prompt)
+    
+    # ============================================================
+# STEP 2: FULL EVALUATION FUNCTION
+# ============================================================
+
+def run_pipeline4_evaluation(prompts_dict, results_file, use_few_shot=True):
+    if os.path.exists(results_file):
+        print(f"✅ Loading saved results from {results_file}...")
+        pred_df = pd.read_csv(results_file)
+    else:
+        print(f"🔄 Running Pipeline 4 on {len(df_sample)} samples...")
+        results = []
+
+        for idx, (_, row) in enumerate(tqdm(
+            df_sample.iterrows(), total=len(df_sample), desc="Pipeline 4"
+        )):
+            preds = {}
+            for label in LABELS:
+                prompt       = build_single_label_prompt(
+                    prompts_dict[label], row["text"], label, use_few_shot
+                )
+                raw          = call_llama(prompt, temperature=0.1)
+                preds[label] = parse_binary(raw)
+                time.sleep(0.15)  # small sleep between calls
