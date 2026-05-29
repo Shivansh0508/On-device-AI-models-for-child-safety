@@ -552,3 +552,10 @@ print("="*70)
 
 improvement_vs_p1     = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
 improvement_vs_p4base = (gepa_f1 - baseline_f1) * 100
+if improvement_vs_p1 > 0:
+    print(f"✅ GEPA improved vs Pipeline 1 by +{improvement_vs_p1:.2f}%")
+else:
+    print(f"❌ No improvement vs Pipeline 1: {improvement_vs_p1:.2f}%")
+
+if improvement_vs_p4base > 0:
+    print(f"✅ GEPA improved vs P4 baseline by +{improvement_vs_p4base:.2f}%")
