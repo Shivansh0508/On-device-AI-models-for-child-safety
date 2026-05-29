@@ -137,3 +137,32 @@ for label in LABELS:
     print(f"  {label:<20}: {pos}/{len(gepa_train)} positive ({pos/len(gepa_train)*100:.1f}%)")
 
 label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+
+# ============================================================
+# API CALLS
+# ============================================================
+
+def call_model(prompt, model, temperature=0.1, max_retries=5):
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "SemEval-Pipeline4-GEPA"
+    }
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 512,
+    }
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                url,
+                headers=headers,
+                json=payload,
+                timeout=120   # ← increase from 60 to 120 seconds
+            )
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
