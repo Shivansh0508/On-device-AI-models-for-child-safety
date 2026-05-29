@@ -173,7 +173,7 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
     print(f" All {max_retries} attempts failed — returning default 0")
     return "0"
 
-# BALANCED SAMPLING — fixes rare label problem
+# BALANCED SAMPLING ; fixes rare label problem
 def get_balanced_sample(dataframe, label, sample_size=30):
     """Ensure positive examples exist in reflection sample"""
     positives = dataframe[dataframe[label] == 1]
@@ -222,15 +222,10 @@ def build_single_label_prompt(instruction, text, label, use_few_shot=True):
         few_shot_block += "\nNow classify the following:\n"
 
     return instruction + few_shot_block + f"""
-
 Sentence: {text}
-
 Return ONLY 0 or 1. No explanation."""
 
-# ============================================================
 # EVALUATE SINGLE LABEL PROMPT
-# ============================================================
-
 def evaluate_single_label(instruction, dataframe, label, use_few_shot=True, desc=""):
     y_true_all, y_pred_all, texts = [], [], []
 
@@ -247,10 +242,7 @@ def evaluate_single_label(instruction, dataframe, label, use_few_shot=True, desc
     f1 = f1_score(y_true_all, y_pred_all, average="binary", zero_division=1)
     return f1, y_true_all, y_pred_all, texts
 
-# ============================================================
 # GEPA REFLECTION FOR SINGLE LABEL
-# ============================================================
-
 def gepa_reflect_single(current_prompt, label, failure_cases, current_score, iteration):
     label_descriptions = {
         "political":     "politically polarizing content — strong partisan bias, attacks on political groups, promotes political division",
@@ -277,21 +269,14 @@ Example {i+1} [{error_type}]:
 """
 
     reflection_prompt = f"""You are an expert NLP prompt engineer specializing in hate speech and polarization detection.
-
 You are optimizing a BINARY classifier prompt for LLaMA 3.3 70B.
-
 TARGET LABEL: {label.upper()}
 Definition: {label_descriptions[label]}
-
 CURRENT PROMPT (Iteration {iteration}):
-===
 {current_prompt}
-===
-
 CURRENT BINARY F1 SCORE: {current_score:.4f} ({current_score*100:.2f}%)
 False Positives: {fp_count} (model predicted 1 when true is 0)
 False Negatives: {fn_count} (model predicted 0 when true is 1)
-
 LLaMA made the following ERRORS:
 {failure_text}
 
@@ -315,10 +300,7 @@ Return ONLY the new improved prompt instruction. No explanation."""
     new_prompt = call_haiku(reflection_prompt, temperature=0.7)
     return new_prompt.strip()
 
-# ============================================================
 # GEPA LOOP FOR SINGLE LABEL
-# ============================================================
-
 def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
     print(f"\n{'='*60}")
     print(f" GEPA for label: {label.upper()}")
@@ -334,11 +316,12 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
     best_score     = 0.0
     history        = []
 
-    # BALANCED sample — fixes 0.00% F1 for rare labels
+    # BALANCED sample 
     reflection_df = get_balanced_sample(gepa_train, label, sample_size)
 
     for iteration in range(1, iterations + 1):
         print(f"\n--- {label.upper()} | Iteration {iteration}/{iterations} ---")
+        
 # Step 1: LLaMA evaluates
         score, y_true_all, y_pred_all, texts = evaluate_single_label(
             current_prompt,
@@ -363,11 +346,9 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
             if y_true_all[i] != y_pred_all[i]
         ]
         print(f"Failures: {len(failure_cases)}/{sample_size}")
-
         if len(failure_cases) == 0:
             print(f"Perfect score for {label}!")
             break
-
         if iteration == iterations:
             break
             
@@ -386,10 +367,7 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
 
     return best_prompt, best_score, history
 
-# ============================================================
-# STEP 1: RUN GEPA FOR ALL 5 LABELS
-# ============================================================
-
+# RUN GEPA FOR ALL 5 LABELS
 print("\n" + "="*60)
 print(" PIPELINE 4 — GEPA INDIVIDUAL LABEL OPTIMIZATION")
 print("Task model      : LLaMA 3.3 70B")
@@ -412,7 +390,7 @@ for label in LABELS:
     best_scores[label]       = best_score
     all_histories[label]     = history
     
-# Save after each label — in case of interruption
+# Save after each label ; in case of interruption
     with open(f"p4_prompt_{label.replace('/', '_')}.txt", "w") as f:
         f.write(opt_prompt)
     print(f" Saved prompt for {label}")
