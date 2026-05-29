@@ -366,4 +366,35 @@ def run_gepa_single_label(label, initial_prompt, iterations=5, sample_size=30):
 
     for iteration in range(1, iterations + 1):
         print(f"\n--- {label.upper()} | Iteration {iteration}/{iterations} ---")
+# Step 1: LLaMA evaluates
+        score, y_true_all, y_pred_all, texts = evaluate_single_label(
+            current_prompt,
+            reflection_df,
+            label,
+            use_few_shot=True,
+            desc=f"{label} iter {iteration}"
+        )
+        print(f"Binary F1: {score:.4f} ({score*100:.2f}%)")
+
+        if score > best_score:
+            best_score  = score
+            best_prompt = current_prompt
+            print(f"✅ New best for {label}: {best_score*100:.2f}%")
+
+        history.append({"iteration": iteration, "score": score, "prompt": current_prompt})
+
+        # Collect failures
+        failure_cases = [
+            (texts[i], y_true_all[i], y_pred_all[i])
+            for i in range(len(texts))
+            if y_true_all[i] != y_pred_all[i]
+        ]
+        print(f"❌ Failures: {len(failure_cases)}/{sample_size}")
+
+        if len(failure_cases) == 0:
+            print(f"🎉 Perfect score for {label}!")
+            break
+
+        if iteration == iterations:
+            break
 
