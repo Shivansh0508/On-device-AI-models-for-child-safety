@@ -166,3 +166,26 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
             )
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
+
+ except requests.exceptions.ReadTimeout:
+            # ← explicitly catch timeout and retry
+            wait = 2 ** attempt
+            print(f"⚠️ Timeout on attempt {attempt+1}/{max_retries}, retrying in {wait}s...")
+            time.sleep(wait)
+
+        except requests.exceptions.HTTPError as e:
+            if response.status_code >= 500:
+                wait = 2 ** attempt
+                print(f"⚠️ Server error {response.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise e
+
+        except requests.exceptions.ConnectionError:
+            wait = 2 ** attempt
+            print(f"⚠️ Connection error, retrying in {wait}s...")
+            time.sleep(wait)
+
+    # If all retries failed — return empty string instead of crashing
+    print(f"❌ All {max_retries} attempts failed — returning default 0")
+    return "0"
