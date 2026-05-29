@@ -212,3 +212,26 @@ def get_balanced_sample(dataframe, label, sample_size=30):
     neg_sample = negatives.sample(min(n_neg, len(negatives)), random_state=SEED)
     balanced   = pd.concat([pos_sample, neg_sample]).sample(frac=1, random_state=SEED)
     return balanced.reset_index(drop=True)
+
+# ============================================================
+# PARSERS
+# ============================================================
+
+def parse_binary(output):
+    try:
+        output = output.strip().lower()
+        if output in ['0', 'no', 'false', 'none', 'not present', 'absent']:
+            return 0
+        if output in ['1', 'yes', 'true', 'present']:
+            return 1
+        match = re.search(r'\b([01])\b', output)
+        if match:
+            return int(match.group(1))
+        json_match = re.search(r'\{.*?\}', output, re.DOTALL)
+        if json_match:
+            parsed = json.loads(json_match.group())
+            val = list(parsed.values())[0]
+            return int(bool(val))
+    except:
+        pass
+    return 0
