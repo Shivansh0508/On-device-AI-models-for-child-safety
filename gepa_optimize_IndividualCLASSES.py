@@ -83,3 +83,28 @@ FEW_SHOT_PER_LABEL = {
         {"text": "The sports team won their regional championship.", "label": 0},
     ],
 }
+
+# ============================================================
+# BASELINE PROMPTS — enhanced for rare labels
+# ============================================================
+
+BASELINE_PROMPTS = {
+    "political": "Is this sentence politically polarizing? Return 0 or 1.",
+
+    "racial/ethnic": "Is this sentence racially or ethnically polarizing? Return 0 or 1.",
+
+    "religious": """Does this sentence express hatred, intolerance, or strong negative bias toward a religious group?
+Examples of 1: "Muslims are terrorists", "Jews control everything", "Atheists are immoral"
+Examples of 0: "The church held a service", "Ramadan started this week"
+Return 1 if religiously polarizing, 0 if not.""",
+
+    "gender/sexual": """Does this sentence express hatred, discrimination or strong negative bias toward women, men, or LGBTQ+ people?
+Examples of 1: "Trans people are mentally ill", "Women belong in the kitchen", "Gay marriage is wrong"
+Examples of 0: "The study analyzed gender gaps", "Pride month celebrations began"
+Return 1 if gender/sexual polarizing, 0 if not.""",
+
+    "other": """Does this sentence express hatred or strong negative bias based on age, class, region, or any social group NOT covered by political/racial/religious/gender categories?
+Examples of 1: "Boomers ruined everything", "The poor deserve to suffer", "Southerners are all racist"
+Examples of 0: "The economy grew this quarter", "Scientists published new findings"
+Return 1 if polarizing in other way, 0 if not.""",
+}
