@@ -189,3 +189,26 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
     # If all retries failed — return empty string instead of crashing
     print(f"❌ All {max_retries} attempts failed — returning default 0")
     return "0"
+
+# ============================================================
+# BALANCED SAMPLING — fixes rare label problem
+# ============================================================
+
+def get_balanced_sample(dataframe, label, sample_size=30):
+    """Ensure positive examples exist in reflection sample"""
+    positives = dataframe[dataframe[label] == 1]
+    negatives = dataframe[dataframe[label] == 0]
+
+    n_pos = min(len(positives), max(8, sample_size // 3))
+    n_neg = sample_size - n_pos
+
+    print(f"  Label {label}: {len(positives)} positives available, sampling {n_pos}")
+
+    if len(positives) == 0:
+        print(f"  ⚠️ No positives for {label} — using random sample")
+        return dataframe.sample(min(sample_size, len(dataframe)), random_state=SEED)
+
+    pos_sample = positives.sample(min(n_pos, len(positives)), random_state=SEED)
+    neg_sample = negatives.sample(min(n_neg, len(negatives)), random_state=SEED)
+    balanced   = pd.concat([pos_sample, neg_sample]).sample(frac=1, random_state=SEED)
+    return balanced.reset_index(drop=True)
