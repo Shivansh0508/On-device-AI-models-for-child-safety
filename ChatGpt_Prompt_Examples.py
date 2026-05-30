@@ -53,3 +53,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. gender_sexual=1 because it attacks transgender people with false medical claims. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
     },
+ {
+        "text": "Boomers ruined the economy and now expect young people to be grateful.",
+        "reasoning": "This sentence expresses strong generational hatred toward Baby Boomers, blaming an entire age group for economic problems. This is age-based polarization that does not fit into political, racial, religious, or gender categories.",
+        "self_correction": "✅ Classification is correct. other=1 because it targets an age group (Boomers) with blame and hatred. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
+    },
