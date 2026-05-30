@@ -820,3 +820,41 @@ if improvement > 0:
     print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
 else:
     print(f"❌ No improvement: {improvement:.2f}%")
+# ============================================================
+# STEP 6: SAVE EVERYTHING
+# ============================================================
+
+with open("pipeline5_optimized_prompt.txt", "w") as f:
+    f.write("="*60 + "\n")
+    f.write("PIPELINE 5 — GEPA + CoT + SELF-CORRECTION\n")
+    f.write("Task Model      : meta-llama/llama-3.3-70b-instruct\n")
+    f.write("Reflection Model: anthropic/claude-3-haiku\n")
+    f.write("GEPA Iterations : 5\n")
+    f.write(f"Few-Shot        : {len(FEW_SHOT_WITH_REASONING)} with reasoning\n")
+    f.write("="*60 + "\n\n")
+    f.write("BASELINE PROMPT:\n")
+    f.write("-"*40 + "\n")
+    f.write(BASELINE_PROMPT)
+    f.write("\n\n")
+    f.write("PIPELINE 5 STARTING PROMPT:\n")
+    f.write("-"*40 + "\n")
+    f.write(PIPELINE5_SYSTEM_PROMPT)
+    f.write("\n\n")
+    f.write("GEPA OPTIMIZED PROMPT:\n")
+    f.write("-"*40 + "\n")
+    f.write(OPTIMIZED_PROMPT)
+    f.write("\n\n")
+    f.write("="*60 + "\n")
+    f.write("GEPA HISTORY\n")
+    f.write("="*60 + "\n")
+    for h in gepa_history:
+        f.write(f"Iteration {h['iteration']}: {h['score']*100:.2f}%\n")
+    f.write("\n")
+    f.write("="*60 + "\n")
+    f.write("FINAL PERFORMANCE\n")
+    f.write("="*60 + "\n")
+    f.write(f"Baseline Macro-F1  : {PIPELINE1_BASELINE_F1*100:.2f}%\n")
+    f.write(f"Pipeline 5 Macro-F1: {gepa_f1*100:.2f}%\n")
+    f.write(f"Improvement        : {improvement:+.2f}%\n")
+
+print("✅ Saved to: pipeline5_optimized_prompt.txt")
