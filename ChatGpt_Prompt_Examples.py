@@ -365,10 +365,7 @@ CRITICAL RULES:
  A sentence CAN belong to multiple categories simultaneously
  When uncertain ask: "Does this promote DIVISION or HATRED?" If yes → 1"""
 
-# ============================================================
 # BUILD PIPELINE 5 PROMPT
-# ============================================================
-
 def build_pipeline5_prompt(instruction, text, use_few_shot=True):
     few_shot_block = ""
     if use_few_shot:
@@ -408,7 +405,7 @@ Step 3 — Initial Classification:
 political=[0/1], racial_ethnic=[0/1], religious=[0/1], gender_sexual=[0/1], other=[0/1]
 
 Step 4 — Self-Correction:
-[Check each label. Write "✅ Correct" or "⚠️ Corrected [label] from [old] to [new] because [reason]"]
+[Check each label. Write " Correct" or " Corrected [label] from [old] to [new] because [reason]"]
 
 Step 5 — Final Explanation:
 [2-3 sentences explaining WHY each positive label was assigned and WHY negatives are 0]
@@ -419,10 +416,8 @@ Final Classification: {"political": 0, "racial_ethnic": 0, "religious": 0, "gend
 Text to classify: "{text}"
 {format_instruction}"""
 
-# ============================================================
-# PARSER
-# ============================================================
 
+# PARSER
 def parse_with_reasoning(output):
     binary = {k: 0 for k in label_cols}
     try:
@@ -466,14 +461,11 @@ def parse_with_reasoning(output):
             return binary
 
     except Exception as e:
-        print(f"⚠️ Parse error: {e} | Output: {output[:200]}")
+        print(f" Parse error: {e} | Output: {output[:200]}")
 
     return binary
 
-# ============================================================
 # EVALUATE PROMPT
-# ============================================================
-
 def evaluate_prompt_p5(instruction, dataframe, use_few_shot=True, desc="Evaluating"):
     y_true_all, y_pred_all, texts = [], [], []
 
@@ -502,10 +494,7 @@ def evaluate_prompt_p5(instruction, dataframe, use_few_shot=True, desc="Evaluati
     macro_f1 = f1_score(y_true_all, y_pred_all, average="macro", zero_division=1)
     return macro_f1, y_true_all, y_pred_all, texts
 
-# ============================================================
 # GEPA REFLECTION
-# ============================================================
-
 def gepa_reflect_p5(current_prompt, failure_cases, current_score, iteration):
     failure_text = ""
     fp_count, fn_count, wrong_cat = 0, 0, 0
@@ -559,7 +548,7 @@ REQUIREMENTS:
 - Add CONFUSION AVOIDANCE rules if model is mixing categories
 - If too many FP: make definitions STRICTER
 - If too many FN: make definitions BROADER and more sensitive
-- Keep the ✅ YES if / ❌ NO if format
+- Keep the  YES if /  NO if format
 - Do NOT include few-shot examples (added separately)
 - Do NOT include JSON format (added separately)
 - Do NOT include sentence placeholder (added separately)
@@ -569,13 +558,10 @@ Return ONLY the new improved prompt. No preamble."""
     new_prompt = call_haiku(reflection_prompt, temperature=0.7)
     return new_prompt.strip()
 
-# ============================================================
 # GEPA MAIN LOOP
-# ============================================================
-
 def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
     print("\n" + "="*60)
-    print("🚀 PIPELINE 5 — GEPA + CHAIN-OF-THOUGHT + SELF-CORRECTION")
+    print(" PIPELINE 5 — GEPA + CHAIN-OF-THOUGHT + SELF-CORRECTION")
     print(f"Task model      : LLaMA 3.3 70B")
     print(f"Reflection model: Claude Haiku")
     print(f"Iterations      : {iterations}")
@@ -592,10 +578,10 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
 
     for iteration in range(1, iterations + 1):
         print(f"\n{'='*60}")
-        print(f"🔄 GEPA Iteration {iteration}/{iterations}")
+        print(f" GEPA Iteration {iteration}/{iterations}")
         print(f"{'='*60}")
 
-        print(f"📊 LLaMA evaluating with CoT + Self-Correction...")
+        print(f" LLaMA evaluating with CoT + Self-Correction...")
         score, y_true_all, y_pred_all, texts = evaluate_prompt_p5(
             current_prompt,
             reflection_df,
@@ -607,7 +593,7 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
         if score > best_score:
             best_score  = score
             best_prompt = current_prompt
-            print(f"✅ New best: {best_score*100:.2f}%")
+            print(f" New best: {best_score*100:.2f}%")
 
         history.append({
             "iteration": iteration,
@@ -620,21 +606,21 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
             for i in range(len(texts))
             if y_true_all[i] != y_pred_all[i]
         ]
-        print(f"❌ Failures: {len(failure_cases)}/{sample_size}")
+        print(f" Failures: {len(failure_cases)}/{sample_size}")
 
         if len(failure_cases) == 0:
-            print("🎉 Perfect score! Stopping early.")
+            print(" Perfect score! Stopping early.")
             break
 
         if iteration == iterations:
             break
 
-        print(f"🤔 Claude Haiku reflecting on reasoning failures...")
+        print(f" Claude Haiku reflecting on reasoning failures...")
         new_prompt = gepa_reflect_p5(current_prompt, failure_cases, score, iteration)
-        print(f"✨ New prompt (first 200 chars):\n{new_prompt[:200]}...")
+        print(f"New prompt (first 200 chars):\n{new_prompt[:200]}...")
         current_prompt = new_prompt
 
-    print(f"\n📈 GEPA Optimization History:")
+    print(f"\n GEPA Optimization History:")
     print(f"  {'Iteration':<12} {'Score':>10}")
     print(f"  {'-'*24}")
     for h in history:
@@ -644,10 +630,7 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
 
     return best_prompt, best_score, history
 
-# ============================================================
-# STEP 1: RUN GEPA OPTIMIZATION
-# ============================================================
-
+# RUN GEPA OPTIMIZATION
 OPTIMIZED_PROMPT, gepa_best_score, gepa_history = run_gepa_p5(
     initial_prompt=PIPELINE5_SYSTEM_PROMPT,
     iterations=GEPA_ITERATIONS,
@@ -655,23 +638,20 @@ OPTIMIZED_PROMPT, gepa_best_score, gepa_history = run_gepa_p5(
 )
 
 print("\n" + "="*60)
-print("✨ FINAL GEPA OPTIMIZED PROMPT ✨")
+print(" FINAL GEPA OPTIMIZED PROMPT ")
 print("="*60)
 print(OPTIMIZED_PROMPT)
 print("="*60)
 
-# ============================================================
-# STEP 2: FULL EVALUATION FUNCTION
-# ============================================================
-
+# FULL EVALUATION FUNCTION
 def run_full_evaluation_p5(prompt_template, results_file,
                             label="", use_few_shot=False,
                             use_reasoning=False):
     if os.path.exists(results_file):
-        print(f"✅ Loading saved {label} results...")
+        print(f" Loading saved {label} results...")
         pred_df = pd.read_csv(results_file)
     else:
-        print(f"🔄 Running {label} inference on 160 samples...")
+        print(f" Running {label} inference on 160 samples...")
         results = []
 
         for idx, (_, row) in enumerate(tqdm(
@@ -712,11 +692,11 @@ Return ONLY a JSON object:
                 pd.DataFrame(results).to_csv(
                     results_file + ".partial", index=False
                 )
-                print(f"  💾 Partial save at {idx+1}/160")
+                print(f" Partial save at {idx+1}/160")
 
         pred_df = pd.DataFrame(results)
         pred_df.to_csv(results_file, index=False)
-        print(f"✅ Saved to {results_file}")
+        print(f" Saved to {results_file}")
 
     y_true = pred_df[
         ["true_political", "true_racial/ethnic", "true_religious",
@@ -731,11 +711,8 @@ Return ONLY a JSON object:
     macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
     return exact_match, macro_f1
 
-# ============================================================
-# STEP 3: EVALUATE BASELINE
-# ============================================================
-
-print("\n===== EVALUATING BASELINE PROMPT ON 160 SAMPLES =====")
+# EVALUATE BASELINE
+print("\n EVALUATING BASELINE PROMPT ON 160 SAMPLES ")
 baseline_exact, baseline_f1 = run_full_evaluation_p5(
     BASELINE_PROMPT,
     results_file="baseline_results.csv",
@@ -744,11 +721,9 @@ baseline_exact, baseline_f1 = run_full_evaluation_p5(
     use_reasoning=False
 )
 
-# ============================================================
-# STEP 4: EVALUATE PIPELINE 5 GEPA
-# ============================================================
 
-print("\n===== EVALUATING PIPELINE 5 GEPA ON 160 SAMPLES =====")
+# EVALUATE PIPELINE 5 GEPA
+print("\n EVALUATING PIPELINE 5 GEPA ON 160 SAMPLES ")
 
 if os.path.exists("p5_gepa_results.csv"):
     os.remove("p5_gepa_results.csv")
@@ -761,14 +736,12 @@ gepa_exact, gepa_f1 = run_full_evaluation_p5(
     use_reasoning=True
 )
 
-# ============================================================
-# STEP 5: FINAL COMPARISON
-# ============================================================
 
+# FINAL COMPARISON
 PIPELINE1_BASELINE_F1 = 0.3975
 
 print("\n" + "="*60)
-print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print(" FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
 print("="*60)
 print(f"{'Metric':<30} {'Baseline (P1)':>14} {'P5 GEPA':>12}")
 print("-"*60)
@@ -778,14 +751,12 @@ print("="*60)
 
 improvement = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
 if improvement > 0:
-    print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
+    print(f" Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
 else:
-    print(f"❌ No improvement: {improvement:.2f}%")
+    print(f" No improvement: {improvement:.2f}%")
 
-# ============================================================
-# STEP 6: SAVE EVERYTHING
-# ============================================================
 
+# SAVE EVERYTHING
 with open("pipeline5_optimized_prompt.txt", "w") as f:
     f.write("="*60 + "\n")
     f.write("PIPELINE 5 — GEPA + CoT + SELF-CORRECTION\n")
@@ -819,4 +790,4 @@ with open("pipeline5_optimized_prompt.txt", "w") as f:
     f.write(f"Pipeline 5 Macro-F1: {gepa_f1*100:.2f}%\n")
     f.write(f"Improvement        : {improvement:+.2f}%\n")
 
-print("✅ Saved to: pipeline5_optimized_prompt.txt")
+print("Saved to: pipeline5_optimized_prompt.txt")
