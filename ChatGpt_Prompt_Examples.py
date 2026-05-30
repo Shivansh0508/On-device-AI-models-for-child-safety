@@ -178,3 +178,8 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. other=1 because it targets elderly people with hostility and blame. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
     },
+]
+
+# ============================================================
+# LOAD DATA
+# ============================================================
