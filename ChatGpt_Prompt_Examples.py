@@ -721,13 +721,10 @@ baseline_exact, baseline_f1 = run_full_evaluation_p5(
     use_reasoning=False
 )
 
-
 # EVALUATE PIPELINE 5 GEPA
 print("\n EVALUATING PIPELINE 5 GEPA ON 160 SAMPLES ")
-
 if os.path.exists("p5_gepa_results.csv"):
     os.remove("p5_gepa_results.csv")
-
 gepa_exact, gepa_f1 = run_full_evaluation_p5(
     OPTIMIZED_PROMPT,
     results_file="p5_gepa_results.csv",
@@ -735,7 +732,6 @@ gepa_exact, gepa_f1 = run_full_evaluation_p5(
     use_few_shot=True,
     use_reasoning=True
 )
-
 
 # FINAL COMPARISON
 PIPELINE1_BASELINE_F1 = 0.3975
@@ -754,7 +750,6 @@ if improvement > 0:
     print(f" Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
 else:
     print(f" No improvement: {improvement:.2f}%")
-
 
 # SAVE EVERYTHING
 with open("pipeline5_optimized_prompt.txt", "w") as f:
