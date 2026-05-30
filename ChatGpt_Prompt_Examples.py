@@ -59,3 +59,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. other=1 because it targets an age group (Boomers) with blame and hatred. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
     },
+{
+        "text": "The radical left is pushing their LGBT agenda on our kids in schools.",
+        "reasoning": "This sentence combines political polarization ('radical left') with gender/sexual polarization (framing LGBTQ+ content as a dangerous 'agenda' targeting children). Both categories apply simultaneously. Self-correction confirms multi-label.",
+        "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include gender_sexual=1 because the sentence frames LGBTQ+ people as dangerous to children — this is both political AND gender/sexual polarization.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
+    },
