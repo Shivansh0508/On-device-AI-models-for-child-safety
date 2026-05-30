@@ -777,3 +777,46 @@ gepa_exact, gepa_f1 = run_full_evaluation_p5(
     label="Pipeline 5 GEPA",
     use_few_shot=True,
     use_reasoning=True
+)
+
+# ============================================================
+# STEP 5: FINAL COMPARISON
+# ============================================================
+
+PIPELINE1_BASELINE_F1 = 0.3975
+
+print("\n" + "="*60)
+print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print("="*60)
+print(f"{'Metric':<30} {'Baseline (P1)':>14} {'P5 GEPA':>12}")
+print("-"*60)
+print(f"{'Exact-match Accuracy':<30} {'N/A':>14} {gepa_exact*100:>11.2f}%")
+print(f"{'Macro-F1 (%)':<30} {PIPELINE1_BASELINE_F1*100:>13.2f}% {gepa_f1*100:>11.2f}%")
+print("="*60)
+
+improvement = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
+if improvement > 0:
+    print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
+else:
+    print(f"❌ No improvement: {improvement:.2f}%"))
+
+# ============================================================
+# STEP 5: FINAL COMPARISON
+# ============================================================
+
+PIPELINE1_BASELINE_F1 = 0.3975
+
+print("\n" + "="*60)
+print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
+print("="*60)
+print(f"{'Metric':<30} {'Baseline (P1)':>14} {'P5 GEPA':>12}")
+print("-"*60)
+print(f"{'Exact-match Accuracy':<30} {'N/A':>14} {gepa_exact*100:>11.2f}%")
+print(f"{'Macro-F1 (%)':<30} {PIPELINE1_BASELINE_F1*100:>13.2f}% {gepa_f1*100:>11.2f}%")
+print("="*60)
+
+improvement = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
+if improvement > 0:
+    print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
+else:
+    print(f"❌ No improvement: {improvement:.2f}%")
