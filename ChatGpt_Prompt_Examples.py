@@ -77,3 +77,51 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Initially classified as racial_ethnic=1 only. Corrected to also include religious=1 because Jewish identity encompasses both ethnicity and religion. Multi-label: racial_ethnic=1 AND religious=1.",
         "political": 0, "racial_ethnic": 1, "religious": 1, "gender_sexual": 0, "other": 0
     },
+ {
+        "text": "The government announced new infrastructure spending plans today.",
+        "reasoning": "This is a neutral factual news statement. It mentions the government but expresses no partisan bias, no attacks on any group, and no polarizing language. All categories are 0.",
+        "self_correction": "✅ Classification is correct. All zeros because the sentence is a neutral factual report with no polarizing language. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "The election results will be announced tomorrow morning.",
+        "reasoning": "This is a neutral factual statement about an upcoming election announcement. It mentions politics but contains no partisan bias, no attacks, and no polarizing language. Merely mentioning an election is NOT polarizing.",
+        "self_correction": "✅ Classification is correct. political=0 because merely reporting on an election announcement is neutral. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "Putin is a war criminal who should be tried at the ICC.",
+        "reasoning": "This sentence expresses a strong political opinion about a world leader using charged language ('war criminal'). It refers to legal accountability for an individual political figure.",
+        "self_correction": "✅ Classification is correct. political=1 due to strong charged opinion about a political figure. No racial, religious, gender, or other group targeted.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+ {
+        "text": "Women should stay home and raise children instead of working.",
+        "reasoning": "This sentence promotes a gender stereotype that limits women's roles to domestic duties and discourages their workforce participation. This is clear gender-based polarization through harmful stereotyping.",
+        "self_correction": "✅ Classification is correct. gender_sexual=1 because it restricts women's roles through harmful stereotyping. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
+    },
+{
+        "text": "The government is waging a war on Christianity.",
+        "reasoning": "This sentence frames government actions as a direct attack on a specific religion (Christianity). It promotes religious victimhood narrative combined with political framing.",
+        "self_correction": "⚠️ Initially classified as religious=1 only. Corrected to also include political=1 because the sentence attacks the government as an institution. Multi-label: political=1 AND religious=1.",
+        "political": 1, "racial_ethnic": 0, "religious": 1, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "Southerners are all racist and uneducated.",
+        "reasoning": "This sentence makes a broad negative generalization about people from a geographic region (Southerners), attributing negative traits to an entire group. This is regional hatred falling under 'other'.",
+        "self_correction": "✅ Classification is correct. other=1 because it targets a regional group with sweeping negative generalizations. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
+    },
+{
+        "text": "Black lives matter and anyone who disagrees is a racist.",
+        "reasoning": "This sentence starts with a racial equality statement but adds a polarizing accusation against those who disagree. The framing promotes racial division by labeling all disagreement as racism.",
+        "self_correction": "✅ Classification is correct. racial_ethnic=1 because the sentence promotes racial division through accusatory framing. No corrections needed.",
+        "political": 0, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "Atheists are immoral people who cannot be trusted.",
+        "reasoning": "This sentence makes a broad negative moral judgment about all atheists. This constitutes religious polarization through discrimination against a non-religious group.",
+        "self_correction": "✅ Classification is correct. religious=1 because it attacks atheists as a group defined by religious identity. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 1, "gender_sexual": 0, "other": 0
+    },
