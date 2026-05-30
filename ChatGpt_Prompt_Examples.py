@@ -262,3 +262,10 @@ def call_haiku(prompt, temperature=0.7):
 BASELINE_PROMPT = """Classify this sentence.
 Labels: political, racial_ethnic, religious, gender_sexual, other.
 Return 0 or 1 for each."""
+# ============================================================
+# PIPELINE 5 SYSTEM PROMPT
+# ============================================================
+
+PIPELINE5_SYSTEM_PROMPT = """You are an expert linguist and content moderation specialist with deep knowledge of polarizing, divisive, and hate-inducing language in social media text.
+
+Your task is to analyze a sentence and classify whether it contains polarizing language across FIVE categories. A sentence can belong to MULTIPLE categories simultaneously.
