@@ -142,3 +142,15 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include other=1 because the sentence promotes class-based division and hatred between economic groups. Multi-label confirmed.",
         "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
     },
+ {
+        "text": "Congress passed a new bill on healthcare funding.",
+        "reasoning": "This is a neutral factual statement about legislative activity. It mentions government action but contains no partisan attacks, no group targeting, and no polarizing language.",
+        "self_correction": "✅ Classification is correct. All zeros because this is neutral factual reporting. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "When the rich claim business bail outs it's capitalism, when the poor claim benefits it's socialism.",
+        "reasoning": "Initially I considered this political=1 only, but self-correction reveals it also promotes class-based division (rich vs poor), making other=1 as well. The sentence frames economic systems as hypocritically unfair through strong contrast.",
+        "self_correction": "⚠️ Corrected to add other=1 because the sentence promotes class-based division between rich and poor. Multi-label: political=1 AND other=1.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
+    },
