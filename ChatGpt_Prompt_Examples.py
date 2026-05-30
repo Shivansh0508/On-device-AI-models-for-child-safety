@@ -588,3 +588,77 @@ Return ONLY the new improved prompt. No preamble."""
 
     new_prompt = call_haiku(reflection_prompt, temperature=0.7)
     return new_prompt.strip()
+# ============================================================
+# GEPA MAIN LOOP
+# ============================================================
+
+def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
+    print("\n" + "="*60)
+    print("🚀 PIPELINE 5 — GEPA + CHAIN-OF-THOUGHT + SELF-CORRECTION")
+    print(f"Task model      : LLaMA 3.3 70B")
+    print(f"Reflection model: Claude Haiku")
+    print(f"Iterations      : {iterations}")
+    print(f"Few-shot        : {len(FEW_SHOT_WITH_REASONING)} examples with reasoning")
+    print(f"Starting from   : PIPELINE5_SYSTEM_PROMPT")
+    print("="*60)
+
+    current_prompt = initial_prompt
+    best_prompt    = initial_prompt
+    best_score     = 0.0
+    history        = []
+
+    reflection_df  = gepa_train.sample(sample_size, random_state=SEED)
+
+    for iteration in range(1, iterations + 1):
+        print(f"\n{'='*60}")
+        print(f"🔄 GEPA Iteration {iteration}/{iterations}")
+        print(f"{'='*60}")
+
+        print(f"📊 LLaMA evaluating with CoT + Self-Correction...")
+        score, y_true_all, y_pred_all, texts = evaluate_prompt_p5(
+            current_prompt,
+            reflection_df,
+            use_few_shot=True,
+            desc=f"P5 iter {iteration}"
+        )
+        print(f"Macro F1: {score:.4f} ({score*100:.2f}%)")
+
+        if score > best_score:
+            best_score  = score
+            best_prompt = current_prompt
+            print(f"✅ New best: {best_score*100:.2f}%")
+
+        history.append({
+            "iteration": iteration,
+            "score": score,
+            "prompt": current_prompt
+        })
+
+        failure_cases = [
+            (texts[i], y_true_all[i], y_pred_all[i])
+            for i in range(len(texts))
+            if y_true_all[i] != y_pred_all[i]
+        ]
+        print(f"❌ Failures: {len(failure_cases)}/{sample_size}")
+
+        if len(failure_cases) == 0:
+            print("🎉 Perfect score! Stopping early.")
+            break
+
+        if iteration == iterations:
+            break
+
+        print(f"🤔 Claude Haiku reflecting on reasoning failures...")
+        new_prompt = gepa_reflect_p5(current_prompt, failure_cases, score, iteration)
+        print(f"✨ New prompt (first 200 chars):\n{new_prompt[:200]}...")
+        current_prompt = new_prompt
+
+    print(f"\n📈 GEPA Optimization History:")
+    print(f"  {'Iteration':<12} {'Score':>10}")
+    print(f"  {'-'*24}")
+    for h in history:
+        marker = " ← best" if h['score'] == best_score else ""
+        print(f"  {h['iteration']:<12} {h['score']*100:>9.2f}%{marker}")
+    print(f"  Best score: {best_score*100:.2f}%")
+
+    return best_prompt, best_score, history
