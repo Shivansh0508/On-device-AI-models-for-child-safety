@@ -35,3 +35,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. Political=1 because it attacks a political party with hostile language. No corrections needed.",
         "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
     },
+{
+        "text": "Immigrants are stealing jobs from real Americans.",
+        "reasoning": "This sentence promotes a harmful stereotype that immigrants take jobs from citizens using dehumanizing framing ('stealing'). It targets an ethnic/national group with hostile language. Initially I considered political=1 but self-correction shows this is primarily racial/ethnic — it attacks a group based on national origin, not a political party.",
+        "self_correction": "⚠️ Corrected political from 1 to 0 because the sentence targets immigrants as an ethnic/national group, not a political party. racial_ethnic=1 is correct.",
+        "political": 0, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },
