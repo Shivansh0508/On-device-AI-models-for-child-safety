@@ -65,3 +65,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include gender_sexual=1 because the sentence frames LGBTQ+ people as dangerous to children — this is both political AND gender/sexual polarization.",
         "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
     },
+{
+        "text": "These foreign invaders are being protected by the liberal government.",
+        "reasoning": "This sentence uses dehumanizing language for immigrants ('foreign invaders') combined with a political attack ('liberal government'). Both racial/ethnic and political polarization are present simultaneously.",
+        "self_correction": "⚠️ Initially classified as racial_ethnic=1 only. Corrected to also include political=1 because the sentence attacks the liberal government. Multi-label: political=1 AND racial_ethnic=1.",
+        "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },
