@@ -662,3 +662,118 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
     print(f"  Best score: {best_score*100:.2f}%")
 
     return best_prompt, best_score, history
+# ============================================================
+# STEP 1: RUN GEPA OPTIMIZATION
+# ============================================================
+
+OPTIMIZED_PROMPT, gepa_best_score, gepa_history = run_gepa_p5(
+    initial_prompt=PIPELINE5_SYSTEM_PROMPT,
+    iterations=GEPA_ITERATIONS,
+    sample_size=GEPA_SAMPLE,
+)
+
+print("\n" + "="*60)
+print("✨ FINAL GEPA OPTIMIZED PROMPT ✨")
+print("="*60)
+print(OPTIMIZED_PROMPT)
+print("="*60)
+
+# ============================================================
+# STEP 2: FULL EVALUATION FUNCTION
+# ============================================================
+
+def run_full_evaluation_p5(prompt_template, results_file,
+                            label="", use_few_shot=False,
+                            use_reasoning=False):
+    if os.path.exists(results_file):
+        print(f"✅ Loading saved {label} results...")
+        pred_df = pd.read_csv(results_file)
+    else:
+        print(f"🔄 Running {label} inference on 160 samples...")
+        results = []
+
+        for idx, (_, row) in enumerate(tqdm(
+            df_sample.iterrows(), total=len(df_sample), desc=label
+        )):
+            if use_reasoning:
+                prompt = build_pipeline5_prompt(
+                    prompt_template, row["text"], use_few_shot
+                )
+            else:
+                prompt = prompt_template + f"""
+
+Sentence: {row['text']}
+
+Return ONLY a JSON object:
+{{"political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0}}"""
+
+            raw  = call_llama(prompt, temperature=0.1)
+            pred = parse_with_reasoning(raw)
+
+            results.append({
+                "pred_political":     pred["political"],
+                "pred_racial/ethnic": pred["racial/ethnic"],
+                "pred_religious":     pred["religious"],
+                "pred_gender/sexual": pred["gender/sexual"],
+                "pred_other":         pred["other"],
+
+                "true_political":     int(row["political"]),
+                "true_racial/ethnic": int(row["racial/ethnic"]),
+                "true_religious":     int(row["religious"]),
+                "true_gender/sexual": int(row["gender/sexual"]),
+                "true_other":         int(row["other"]),
+            })
+            time.sleep(0.3)
+
+            # Partial save every 20
+            if (idx + 1) % 20 == 0:
+                pd.DataFrame(results).to_csv(
+                    results_file + ".partial", index=False
+                )
+                print(f"  💾 Partial save at {idx+1}/160")
+
+        pred_df = pd.DataFrame(results)
+        pred_df.to_csv(results_file, index=False)
+        print(f"✅ Saved to {results_file}")
+
+    y_true = pred_df[
+        ["true_political", "true_racial/ethnic", "true_religious",
+         "true_gender/sexual", "true_other"]
+    ].values
+    y_pred = pred_df[
+        ["pred_political", "pred_racial/ethnic", "pred_religious",
+         "pred_gender/sexual", "pred_other"]
+    ].values
+
+    exact_match = (y_true == y_pred).all(axis=1).mean()
+    macro_f1    = f1_score(y_true, y_pred, average="macro", zero_division=1)
+    return exact_match, macro_f1
+
+# ============================================================
+# STEP 3: EVALUATE BASELINE
+# ============================================================
+
+print("\n===== EVALUATING BASELINE PROMPT ON 160 SAMPLES =====")
+baseline_exact, baseline_f1 = run_full_evaluation_p5(
+    BASELINE_PROMPT,
+    results_file="baseline_results.csv",
+    label="Baseline",
+    use_few_shot=False,
+    use_reasoning=False
+)
+
+# ============================================================
+# STEP 4: EVALUATE PIPELINE 5 GEPA
+# ============================================================
+
+print("\n===== EVALUATING PIPELINE 5 GEPA ON 160 SAMPLES =====")
+
+if os.path.exists("p5_gepa_results.csv"):
+    os.remove("p5_gepa_results.csv")
+
+gepa_exact, gepa_f1 = run_full_evaluation_p5(
+    OPTIMIZED_PROMPT,
+    results_file="p5_gepa_results.csv",
+    label="Pipeline 5 GEPA",
+    use_few_shot=True,
+    use_reasoning=True
