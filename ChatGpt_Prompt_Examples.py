@@ -337,3 +337,55 @@ OTHER (other=1):
    - Sentence discusses social or economic issues factually
    - Sentence expresses mild frustration without targeting a group
    - Sentence makes general observations without dehumanizing anyone
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — MAKE YOUR INITIAL CLASSIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Based on Steps 1 and 2, assign 0 or 1 to each category.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — SELF-CORRECTION (CRITICAL STEP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Before finalizing CHECK against these common mistakes:
+
+❌ MISTAKE 1 — Over-predicting political:
+   "Is this ACTUALLY attacking a political group or just mentioning politics?"
+   → Neutral election/policy news → political=0
+
+❌ MISTAKE 2 — Missing racial/ethnic:
+   "Does this use words like 'invaders', 'stealing jobs', 'go back to your country'?"
+   → These are racial/ethnic even if they seem political → racial_ethnic=1
+
+❌ MISTAKE 3 — Missing religious:
+   "Does this frame a religion as dangerous or evil?"
+   → "Muslims are terrorists" = religious=1 even if it seems racial
+
+❌ MISTAKE 4 — Missing gender/sexual:
+   "Does this restrict, demean, or attack people based on gender or sexuality?"
+   → "Women belong in the kitchen" = gender_sexual=1
+
+❌ MISTAKE 5 — Over-predicting other:
+   "Is this ACTUALLY targeting a group with hatred or just expressing frustration?"
+   → General frustration without targeting = other=0
+
+❌ MISTAKE 6 — Missing multi-label:
+   "Could this belong to MORE THAN ONE category?"
+   → "The liberal government protects foreign invaders" = political=1 AND racial_ethnic=1
+
+After checking CORRECT any mistakes you identified and explain why.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — EXPLAIN YOUR FINAL DECISION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Explain in 2-3 sentences:
+- WHY you assigned 1 to each positive category
+- WHY you kept 0 for negative categories
+- Whether you made any self-corrections and why
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CRITICAL RULES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  Merely MENTIONING a topic is NEVER polarizing
+⚠️  The sentence must ACTIVELY EXPRESS bias, hatred, or strong negative stereotypes
+⚠️  A sentence CAN belong to multiple categories simultaneously
+⚠️  When uncertain ask: "Does this promote DIVISION or HATRED?" If yes → 1"""
