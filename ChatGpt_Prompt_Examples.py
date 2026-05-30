@@ -160,3 +160,21 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Initially classified as political=1 only. Corrected to add racial_ethnic=1 because IDF reference introduces ethnic/national group targeting. Multi-label: political=1 AND racial_ethnic=1.",
         "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
     },
+{
+        "text": "So Russia commits war crimes, how does that justify Ukraine also committing war crimes?",
+        "reasoning": "This sentence raises a moral question about war crimes by both sides of a conflict. It does not attack an ethnic group or promote hatred — it questions moral equivalence between countries.",
+        "self_correction": "✅ Classification is correct. political=1 for geopolitical framing. racial_ethnic=0 because it discusses countries/governments not ethnic groups with hatred. No corrections needed.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+    {
+        "text": "You think Putin wants to talk? Come on, wake up people.",
+        "reasoning": "This sentence expresses rhetorical frustration about geopolitics and Putin's intentions. It uses charged language but addresses people broadly rather than attacking a political group.",
+        "self_correction": "✅ Classification is correct. political=1 due to charged opinion about a political figure. No group is specifically attacked with hatred. No corrections needed.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0
+    },
+    {
+        "text": "Old people should just retire and stop blocking progress.",
+        "reasoning": "This sentence expresses ageist hostility toward elderly people, blaming them for blocking societal progress. This is age-based discrimination falling under 'other'.",
+        "self_correction": "✅ Classification is correct. other=1 because it targets elderly people with hostility and blame. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
+    },
