@@ -71,3 +71,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Initially classified as racial_ethnic=1 only. Corrected to also include political=1 because the sentence attacks the liberal government. Multi-label: political=1 AND racial_ethnic=1.",
         "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
     },
+ {
+        "text": "Jews control the media and the banks.",
+        "reasoning": "This sentence promotes a well-known antisemitic conspiracy theory targeting Jewish people. It constitutes both racial/ethnic polarization (Jewish as ethnic group) and religious polarization (Jewish as religious group).",
+        "self_correction": "⚠️ Initially classified as racial_ethnic=1 only. Corrected to also include religious=1 because Jewish identity encompasses both ethnicity and religion. Multi-label: racial_ethnic=1 AND religious=1.",
+        "political": 0, "racial_ethnic": 1, "religious": 1, "gender_sexual": 0, "other": 0
+    },
