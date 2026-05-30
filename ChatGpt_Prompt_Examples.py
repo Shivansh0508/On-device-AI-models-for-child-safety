@@ -136,3 +136,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. gender_sexual=1 because it attacks same-sex relationships with dehumanizing language. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
     },
+ {
+        "text": "The rich elites control everything while the working class suffers.",
+        "reasoning": "This sentence promotes class-based conflict between rich elites and the working class. It combines political overtones with class-based polarization.",
+        "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include other=1 because the sentence promotes class-based division and hatred between economic groups. Multi-label confirmed.",
+        "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
+    },
