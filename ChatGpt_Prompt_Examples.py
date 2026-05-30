@@ -389,3 +389,37 @@ CRITICAL RULES:
 ⚠️  The sentence must ACTIVELY EXPRESS bias, hatred, or strong negative stereotypes
 ⚠️  A sentence CAN belong to multiple categories simultaneously
 ⚠️  When uncertain ask: "Does this promote DIVISION or HATRED?" If yes → 1"""
+# ============================================================
+# BUILD PIPELINE 5 PROMPT
+# ============================================================
+
+def build_pipeline5_prompt(instruction, text, use_few_shot=True):
+    few_shot_block = ""
+    if use_few_shot:
+        few_shot_block = "\n\n" + "━"*50 + "\n"
+        few_shot_block += "EXAMPLES — Study the reasoning and self-correction process:\n"
+        few_shot_block += "━"*50 + "\n"
+
+        for i, ex in enumerate(FEW_SHOT_WITH_REASONING):
+            few_shot_block += f"""
+EXAMPLE {i+1}:
+Text: "{ex['text']}"
+
+Step 1 — Understanding: {ex['reasoning']}
+
+Step 3 — Initial Classification:
+political={ex['political']}, racial_ethnic={ex['racial_ethnic']}, religious={ex['religious']}, gender_sexual={ex['gender_sexual']}, other={ex['other']}
+
+Step 4 — Self-Correction: {ex['self_correction']}
+
+Step 5 — Final Explanation: {ex['reasoning']}
+
+Final Classification: {{"political": {ex['political']}, "racial_ethnic": {ex['racial_ethnic']}, "religious": {ex['religious']}, "gender_sexual": {ex['gender_sexual']}, "other": {ex['other']}}}
+
+{"─"*40}"""
+
+        few_shot_block += "\n" + "━"*50
+        few_shot_block += "\nNow apply ALL 5 STEPS to classify this sentence:\n"
+        few_shot_block += "━"*50 + "\n"
+
+    format_instruction = """
