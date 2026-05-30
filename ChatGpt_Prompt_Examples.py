@@ -125,3 +125,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "✅ Classification is correct. religious=1 because it attacks atheists as a group defined by religious identity. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 1, "gender_sexual": 0, "other": 0
     },
+{
+        "text": "Israel is committing genocide against Palestinians.",
+        "reasoning": "This sentence makes a strong accusation about a country's actions toward an ethnic group. It combines political framing with racial/ethnic content through highly charged language.",
+        "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include racial_ethnic=1 because Palestinians are an ethnic group being discussed in a highly charged accusatory context. Multi-label confirmed.",
+        "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },
