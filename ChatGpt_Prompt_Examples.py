@@ -462,3 +462,32 @@ def parse_with_reasoning(output):
             binary["gender/sexual"] = int(bool(parsed.get("gender_sexual", 0)))
             binary["other"]         = int(bool(parsed.get("other", 0)))
             return binary
+# Secondary: Classification keyword
+        class_match = re.search(
+            r'[Cc]lassification\s*:\s*(\{.*?\})',
+            output, re.DOTALL
+        )
+        if class_match:
+            parsed = json.loads(class_match.group(1))
+            binary["political"]     = int(bool(parsed.get("political", 0)))
+            binary["racial/ethnic"] = int(bool(parsed.get("racial_ethnic", 0)))
+            binary["religious"]     = int(bool(parsed.get("religious", 0)))
+            binary["gender/sexual"] = int(bool(parsed.get("gender_sexual", 0)))
+            binary["other"]         = int(bool(parsed.get("other", 0)))
+            return binary
+
+        # Tertiary: last JSON in output (self-corrected)
+        all_jsons = re.findall(r'\{[^{}]*\}', output, re.DOTALL)
+        if all_jsons:
+            parsed = json.loads(all_jsons[-1])
+            binary["political"]     = int(bool(parsed.get("political", 0)))
+            binary["racial/ethnic"] = int(bool(parsed.get("racial_ethnic", 0)))
+            binary["religious"]     = int(bool(parsed.get("religious", 0)))
+            binary["gender/sexual"] = int(bool(parsed.get("gender_sexual", 0)))
+            binary["other"]         = int(bool(parsed.get("other", 0)))
+            return binary
+
+    except Exception as e:
+        print(f"⚠️ Parse error: {e} | Output: {output[:200]}")
+
+    return binary
