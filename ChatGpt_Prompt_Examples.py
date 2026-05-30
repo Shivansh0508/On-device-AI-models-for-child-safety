@@ -41,9 +41,15 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Corrected political from 1 to 0 because the sentence targets immigrants as an ethnic/national group, not a political party. racial_ethnic=1 is correct.",
         "political": 0, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
     },
-        {
-        "text": "Muslims are a threat to our Christian values and way of life.",
+ {
+         "text": "Muslims are a threat to our Christian values and way of life.",
         "reasoning": "This sentence frames an entire religious group (Muslims) as a threat to another religious group (Christians). It promotes religious intolerance and division by portraying one faith as inherently dangerous to another. This is clear religious polarization.",
         "self_correction": "✅ Classification is correct. Religious=1 because it attacks Muslims and frames them as threatening. No corrections needed.",
         "political": 0, "racial_ethnic": 0, "religious": 1, "gender_sexual": 0, "other": 0
+    },
+{
+        "text": "Trans people are mentally ill and should not be near children.",
+        "reasoning": "This sentence makes a medically false and dehumanizing claim about transgender people and implies they are dangerous to children. This is severe gender/sexual polarization through harmful stereotyping that denies the humanity of a group.",
+        "self_correction": "✅ Classification is correct. gender_sexual=1 because it attacks transgender people with false medical claims. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
     },
