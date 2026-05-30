@@ -365,7 +365,10 @@ CRITICAL RULES:
  A sentence CAN belong to multiple categories simultaneously
  When uncertain ask: "Does this promote DIVISION or HATRED?" If yes → 1"""
 
+# ============================================================
 # BUILD PIPELINE 5 PROMPT
+# ============================================================
+
 def build_pipeline5_prompt(instruction, text, use_few_shot=True):
     few_shot_block = ""
     if use_few_shot:
@@ -378,18 +381,25 @@ def build_pipeline5_prompt(instruction, text, use_few_shot=True):
 EXAMPLE {i+1}:
 Text: "{ex['text']}"
 
-Understanding: {ex['reasoning']}
-Initial Classification:
-political={ex['political']}, racial_ethnic={ex['racial_ethnic']}, religious={ex['religious']}, gender_sexual={ex['gender_sexual']}, other={ex['other']
- — Self-Correction: {ex['self_correction']}
- — Final Explanation: {ex['reasoning']}
+Step 1 — Understanding: {ex['reasoning']}
+
+Step 3 — Initial Classification:
+political={ex['political']}, racial_ethnic={ex['racial_ethnic']}, religious={ex['religious']}, gender_sexual={ex['gender_sexual']}, other={ex['other']}
+
+Step 4 — Self-Correction: {ex['self_correction']}
+
+Step 5 — Final Explanation: {ex['reasoning']}
+
 Final Classification: {{"political": {ex['political']}, "racial_ethnic": {ex['racial_ethnic']}, "religious": {ex['religious']}, "gender_sexual": {ex['gender_sexual']}, "other": {ex['other']}}}
+
 {"─"*40}"""
+
         few_shot_block += "\n" + "━"*50
         few_shot_block += "\nNow apply ALL 5 STEPS to classify this sentence:\n"
         few_shot_block += "━"*50 + "\n"
 
     format_instruction = """
+
 Your response MUST follow this EXACT format:
 
 Step 1 — Understanding: [What is the sentence about? What is the tone? Who is targeted?]
@@ -398,7 +408,7 @@ Step 3 — Initial Classification:
 political=[0/1], racial_ethnic=[0/1], religious=[0/1], gender_sexual=[0/1], other=[0/1]
 
 Step 4 — Self-Correction:
-[Check each label. Write " Correct" or " Corrected [label] from [old] to [new] because [reason]"]
+[Check each label. Write "✅ Correct" or "⚠️ Corrected [label] from [old] to [new] because [reason]"]
 
 Step 5 — Final Explanation:
 [2-3 sentences explaining WHY each positive label was assigned and WHY negatives are 0]
@@ -407,9 +417,12 @@ Final Classification: {"political": 0, "racial_ethnic": 0, "religious": 0, "gend
 
     return instruction + few_shot_block + f"""
 Text to classify: "{text}"
-{format_instruction} """
+{format_instruction}"""
 
+# ============================================================
 # PARSER
+# ============================================================
+
 def parse_with_reasoning(output):
     binary = {k: 0 for k in label_cols}
     try:
@@ -426,7 +439,8 @@ def parse_with_reasoning(output):
             binary["gender/sexual"] = int(bool(parsed.get("gender_sexual", 0)))
             binary["other"]         = int(bool(parsed.get("other", 0)))
             return binary
-# Secondary: Classification keyword
+
+        # Secondary: Classification keyword
         class_match = re.search(
             r'[Cc]lassification\s*:\s*(\{.*?\})',
             output, re.DOTALL
@@ -455,6 +469,7 @@ def parse_with_reasoning(output):
         print(f"⚠️ Parse error: {e} | Output: {output[:200]}")
 
     return binary
+
 # ============================================================
 # EVALUATE PROMPT
 # ============================================================
@@ -486,6 +501,7 @@ def evaluate_prompt_p5(instruction, dataframe, use_few_shot=True, desc="Evaluati
 
     macro_f1 = f1_score(y_true_all, y_pred_all, average="macro", zero_division=1)
     return macro_f1, y_true_all, y_pred_all, texts
+
 # ============================================================
 # GEPA REFLECTION
 # ============================================================
@@ -552,6 +568,7 @@ Return ONLY the new improved prompt. No preamble."""
 
     new_prompt = call_haiku(reflection_prompt, temperature=0.7)
     return new_prompt.strip()
+
 # ============================================================
 # GEPA MAIN LOOP
 # ============================================================
@@ -626,6 +643,7 @@ def run_gepa_p5(initial_prompt, iterations=5, sample_size=30):
     print(f"  Best score: {best_score*100:.2f}%")
 
     return best_prompt, best_score, history
+
 # ============================================================
 # STEP 1: RUN GEPA OPTIMIZATION
 # ============================================================
@@ -762,28 +780,8 @@ improvement = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
 if improvement > 0:
     print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
 else:
-    print(f"❌ No improvement: {improvement:.2f}%"))
-
-# ============================================================
-# STEP 5: FINAL COMPARISON
-# ============================================================
-
-PIPELINE1_BASELINE_F1 = 0.3975
-
-print("\n" + "="*60)
-print("📊 FINAL COMPARISON (sklearn Macro-F1 on 160 samples)")
-print("="*60)
-print(f"{'Metric':<30} {'Baseline (P1)':>14} {'P5 GEPA':>12}")
-print("-"*60)
-print(f"{'Exact-match Accuracy':<30} {'N/A':>14} {gepa_exact*100:>11.2f}%")
-print(f"{'Macro-F1 (%)':<30} {PIPELINE1_BASELINE_F1*100:>13.2f}% {gepa_f1*100:>11.2f}%")
-print("="*60)
-
-improvement = (gepa_f1 - PIPELINE1_BASELINE_F1) * 100
-if improvement > 0:
-    print(f"✅ Pipeline 5 improved Macro-F1 by +{improvement:.2f}% over baseline")
-else:
     print(f"❌ No improvement: {improvement:.2f}%")
+
 # ============================================================
 # STEP 6: SAVE EVERYTHING
 # ============================================================
