@@ -154,3 +154,9 @@ FEW_SHOT_WITH_REASONING = [
         "self_correction": "⚠️ Corrected to add other=1 because the sentence promotes class-based division between rich and poor. Multi-label: political=1 AND other=1.",
         "political": 1, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 1
     },
+ {
+        "text": "felon musk felon trump IDF supporters",
+        "reasoning": "This sentence combines political attacks (Trump, Musk labeled as felons) with reference to IDF (Israeli Defense Forces) which introduces racial/ethnic elements related to the Israeli-Palestinian conflict.",
+        "self_correction": "⚠️ Initially classified as political=1 only. Corrected to add racial_ethnic=1 because IDF reference introduces ethnic/national group targeting. Multi-label: political=1 AND racial_ethnic=1.",
+        "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },
