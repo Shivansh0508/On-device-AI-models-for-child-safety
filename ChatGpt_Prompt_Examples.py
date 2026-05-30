@@ -522,3 +522,69 @@ def evaluate_prompt_p5(instruction, dataframe, use_few_shot=True, desc="Evaluati
 
     macro_f1 = f1_score(y_true_all, y_pred_all, average="macro", zero_division=1)
     return macro_f1, y_true_all, y_pred_all, texts
+# ============================================================
+# GEPA REFLECTION
+# ============================================================
+
+def gepa_reflect_p5(current_prompt, failure_cases, current_score, iteration):
+    failure_text = ""
+    fp_count, fn_count, wrong_cat = 0, 0, 0
+
+    for i, (text, true, pred) in enumerate(failure_cases[:12]):
+        if sum(pred) > sum(true):
+            error_type = "FALSE POSITIVE — model over-predicted"
+            fp_count += 1
+        elif sum(pred) < sum(true):
+            error_type = "FALSE NEGATIVE — model under-predicted"
+            fn_count += 1
+        else:
+            error_type = "WRONG CATEGORY — right count, wrong labels"
+            wrong_cat += 1
+
+        failure_text += f"""
+Example {i+1} [{error_type}]:
+  Text      : {text}
+  True      : political={true[0]}, racial_ethnic={true[1]}, religious={true[2]}, gender_sexual={true[3]}, other={true[4]}
+  Predicted : political={pred[0]}, racial_ethnic={pred[1]}, religious={pred[2]}, gender_sexual={pred[3]}, other={pred[4]}
+"""
+
+    reflection_prompt = f"""You are an expert NLP prompt engineer specializing in hate speech and polarization detection.
+
+You are optimizing a Chain-of-Thought prompt with self-correction for LLaMA 3.3 70B.
+
+CURRENT PROMPT (Iteration {iteration}):
+===
+{current_prompt}
+===
+
+CURRENT MACRO F1: {current_score:.4f} ({current_score*100:.2f}%)
+False Positives : {fp_count} (over-predicting — model assigns 1 when true is 0)
+False Negatives : {fn_count} (under-predicting — model assigns 0 when true is 1)
+Wrong Categories: {wrong_cat} (right count, wrong category assigned)
+
+FAILURE CASES:
+{failure_text}
+
+YOUR TASK:
+1. Analyze the reasoning failures — is the model's Step 4 self-correction catching errors?
+2. Are the definitions in Step 2 precise enough?
+3. Is the model confusing categories?
+4. Are the MISTAKE checks in Step 4 targeting the right error patterns?
+5. Rewrite the prompt to fix these specific failures
+
+REQUIREMENTS:
+- Keep the STEP 1 / STEP 2 / STEP 3 / STEP 4 / STEP 5 structure
+- Make definitions MORE precise for failing categories
+- Update MISTAKE checks in Step 4 to target the actual errors you see
+- Add CONFUSION AVOIDANCE rules if model is mixing categories
+- If too many FP: make definitions STRICTER
+- If too many FN: make definitions BROADER and more sensitive
+- Keep the ✅ YES if / ❌ NO if format
+- Do NOT include few-shot examples (added separately)
+- Do NOT include JSON format (added separately)
+- Do NOT include sentence placeholder (added separately)
+
+Return ONLY the new improved prompt. No preamble."""
+
+    new_prompt = call_haiku(reflection_prompt, temperature=0.7)
+    return new_prompt.strip()
