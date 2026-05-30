@@ -183,3 +183,22 @@ FEW_SHOT_WITH_REASONING = [
 # ============================================================
 # LOAD DATA
 # ============================================================
+df = pd.read_csv("train/eng.csv")
+
+LABELS = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+df[LABELS] = df[LABELS].fillna(0)
+
+# SAME 160 fixed samples as all pipelines
+df_sample  = df.sample(160, random_state=42)
+
+# Larger pool for GEPA
+df_gepa    = df.sample(500, random_state=42)
+gepa_train = df_gepa.iloc[:450]
+gepa_val   = df_gepa.iloc[450:500]
+
+print(f"GEPA Pool  : {len(gepa_train)}")
+print(f"GEPA Val   : {len(gepa_val)}")
+print(f"Final Eval : {len(df_sample)} samples")
+print(f"Few-shot   : {len(FEW_SHOT_WITH_REASONING)} examples with reasoning + self-correction")
+
+label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
