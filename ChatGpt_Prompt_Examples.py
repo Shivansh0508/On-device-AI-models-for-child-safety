@@ -202,3 +202,41 @@ print(f"Final Eval : {len(df_sample)} samples")
 print(f"Few-shot   : {len(FEW_SHOT_WITH_REASONING)} examples with reasoning + self-correction")
 
 label_cols = ["political", "racial/ethnic", "religious", "gender/sexual", "other"]
+# ============================================================
+# API CALLS
+# ============================================================
+
+def call_model(prompt, model, temperature=0.1, max_retries=5):
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "SemEval-Pipeline5-GEPA"
+    }
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 1024,
+    }
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                url, headers=headers, json=payload, timeout=120
+            )
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
+
+        except requests.exceptions.ReadTimeout:
+            wait = 2 ** attempt
+            print(f"⚠️ Timeout attempt {attempt+1}/{max_retries}, retrying in {wait}s...")
+            time.sleep(wait)
+
+        except requests.exceptions.HTTPError as e:
+            if response.status_code >= 500:
+                wait = 2 ** attempt
+                print(f"⚠️ Server error {response.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise e
