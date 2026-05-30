@@ -130,4 +130,9 @@ FEW_SHOT_WITH_REASONING = [
         "reasoning": "This sentence makes a strong accusation about a country's actions toward an ethnic group. It combines political framing with racial/ethnic content through highly charged language.",
         "self_correction": "⚠️ Initially classified as political=1 only. Corrected to also include racial_ethnic=1 because Palestinians are an ethnic group being discussed in a highly charged accusatory context. Multi-label confirmed.",
         "political": 1, "racial_ethnic": 1, "religious": 0, "gender_sexual": 0, "other": 0
+    },{
+        "text": "Gay marriage is an abomination against nature.",
+        "reasoning": "This sentence expresses extreme hostility toward same-sex marriage using religiously charged language ('abomination'). It directly attacks LGBTQ+ relationships.",
+        "self_correction": "✅ Classification is correct. gender_sexual=1 because it attacks same-sex relationships with dehumanizing language. No corrections needed.",
+        "political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 1, "other": 0
     },
