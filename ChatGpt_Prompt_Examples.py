@@ -240,3 +240,25 @@ def call_model(prompt, model, temperature=0.1, max_retries=5):
                 time.sleep(wait)
             else:
                 raise e
+except requests.exceptions.ConnectionError:
+            wait = 2 ** attempt
+            print(f"⚠️ Connection error, retrying in {wait}s...")
+            time.sleep(wait)
+
+    print(f"❌ All retries failed — returning default")
+    return '{"political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0}'
+
+
+def call_llama(prompt, temperature=0.1):
+    return call_model(prompt, "meta-llama/llama-3.3-70b-instruct", temperature)
+
+
+def call_haiku(prompt, temperature=0.7):
+    return call_model(prompt, "anthropic/claude-3-haiku", temperature)
+
+# ============================================================
+# BASELINE PROMPT
+# ============================================================
+BASELINE_PROMPT = """Classify this sentence.
+Labels: political, racial_ethnic, religious, gender_sexual, other.
+Return 0 or 1 for each."""
