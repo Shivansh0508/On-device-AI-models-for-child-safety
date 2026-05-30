@@ -423,3 +423,42 @@ Final Classification: {{"political": {ex['political']}, "racial_ethnic": {ex['ra
         few_shot_block += "━"*50 + "\n"
 
     format_instruction = """
+Your response MUST follow this EXACT format:
+
+Step 1 — Understanding: [What is the sentence about? What is the tone? Who is targeted?]
+
+Step 3 — Initial Classification:
+political=[0/1], racial_ethnic=[0/1], religious=[0/1], gender_sexual=[0/1], other=[0/1]
+
+Step 4 — Self-Correction:
+[Check each label. Write "✅ Correct" or "⚠️ Corrected [label] from [old] to [new] because [reason]"]
+
+Step 5 — Final Explanation:
+[2-3 sentences explaining WHY each positive label was assigned and WHY negatives are 0]
+
+Final Classification: {"political": 0, "racial_ethnic": 0, "religious": 0, "gender_sexual": 0, "other": 0}"""
+
+    return instruction + few_shot_block + f"""
+Text to classify: "{text}"
+{format_instruction}"""
+
+# ============================================================
+# PARSER
+# ============================================================
+
+def parse_with_reasoning(output):
+    binary = {k: 0 for k in label_cols}
+    try:
+        # Primary: Final Classification keyword
+        final_match = re.search(
+            r'[Ff]inal\s+[Cc]lassification\s*:\s*(\{.*?\})',
+            output, re.DOTALL
+        )
+        if final_match:
+            parsed = json.loads(final_match.group(1))
+            binary["political"]     = int(bool(parsed.get("political", 0)))
+            binary["racial/ethnic"] = int(bool(parsed.get("racial_ethnic", 0)))
+            binary["religious"]     = int(bool(parsed.get("religious", 0)))
+            binary["gender/sexual"] = int(bool(parsed.get("gender_sexual", 0)))
+            binary["other"]         = int(bool(parsed.get("other", 0)))
+            return binary
