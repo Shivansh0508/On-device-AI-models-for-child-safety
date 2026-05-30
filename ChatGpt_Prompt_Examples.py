@@ -491,3 +491,34 @@ def parse_with_reasoning(output):
         print(f"⚠️ Parse error: {e} | Output: {output[:200]}")
 
     return binary
+# ============================================================
+# EVALUATE PROMPT
+# ============================================================
+
+def evaluate_prompt_p5(instruction, dataframe, use_few_shot=True, desc="Evaluating"):
+    y_true_all, y_pred_all, texts = [], [], []
+
+    for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=desc):
+        prompt = build_pipeline5_prompt(instruction, row["text"], use_few_shot)
+        raw    = call_llama(prompt, temperature=0.1)
+        pred   = parse_with_reasoning(raw)
+
+        y_true_all.append([
+            int(row["political"]),
+            int(row["racial/ethnic"]),
+            int(row["religious"]),
+            int(row["gender/sexual"]),
+            int(row["other"]),
+        ])
+        y_pred_all.append([
+            pred["political"],
+            pred["racial/ethnic"],
+            pred["religious"],
+            pred["gender/sexual"],
+            pred["other"],
+        ])
+        texts.append(row["text"])
+        time.sleep(0.3)
+
+    macro_f1 = f1_score(y_true_all, y_pred_all, average="macro", zero_division=1)
+    return macro_f1, y_true_all, y_pred_all, texts
