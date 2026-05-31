@@ -9,7 +9,8 @@ from tqdm import tqdm
 from glob import glob
 from sklearn.metrics import f1_score
 import getpass
-# ── API SETUP ─────────────────────────────────────────────
+
+# API SETUP 
 os.environ["OPENROUTER_API_KEY"] = getpass.getpass(
     "Enter OpenRouter API key: "
 )
@@ -22,8 +23,9 @@ LABEL_COLS       = [
 ]
 SAMPLES_PER_LANG = 50
 SEED             = 42
-# ── STEP 2: AUTO-DETECT YOUR PATHS ───────────────────────
-# Searches your entire Drive for eng.csv to find the real path
+
+# AUTO-DETECT PATHS 
+# Searches entire Drive for eng.csv to find the real path
 print(" Searching for your dataset files...")
 
 found = glob(
@@ -31,7 +33,7 @@ found = glob(
     recursive=True
 )
 
-# Show what we found
+# Show what is found
 print(f"Found {len(found)} CSV files total:")
 for f in found:
     print(f"  {f}")
@@ -52,7 +54,8 @@ print(f"\n Auto-detected paths:")
 print(f"   ENG_FILE   = {ENG_FILE}")
 print(f"   TRAIN_PATH = {TRAIN_PATH}")
 print(f"   BASE_PATH  = {BASE_PATH}")
-# ── STEP 3: LOAD NON-ENGLISH FILES ────────────────────────
+
+#  LOAD NON-ENGLISH FILES 
 all_lang_files = glob(f"{TRAIN_PATH}/*.csv")
 non_eng_files  = [
     f for f in all_lang_files
@@ -63,7 +66,7 @@ print(f"\n English file   : {ENG_FILE}")
 print(f" Non-English files found: {len(non_eng_files)}")
 for f in non_eng_files:
     print(f"   → {os.path.basename(f)}")
-# ── TRANSLATION FUNCTION ──────────────────────────────────
+# TRANSLATION FUNCTION 
 def translate_to_english(text, retries=3):
     prompt = f"""Translate the following sentence to English.
 Return ONLY the translated English text, nothing else.
@@ -71,7 +74,6 @@ Return ONLY the translated English text, nothing else.
 Sentence: {text}
 
 Translation:"""
-
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json",
@@ -108,8 +110,9 @@ for attempt in range(retries):
             print(f"  Attempt {attempt+1} error: {e}")
             time.sleep(2 ** attempt)
 
-    return text  # fallback — keep original
-# ── STEP 4: SAMPLE + TRANSLATE ────────────────────────────
+    return text 
+
+# SAMPLE + TRANSLATE 
 all_translated_rows = []
 
 for lang_file in non_eng_files:
@@ -160,10 +163,10 @@ if (idx + 1) % 10 == 0:
     except Exception as e:
         print(f"\n Error with {lang_code}: {e}")
         continue
-# ── STEP 5: SAVE + COMBINE ────────────────────────────────
+#  SAVE + COMBINE 
 df_translated  = pd.DataFrame(all_translated_rows)
 
-# Save to same folder as eng.csv — guaranteed to exist
+# Save to same folder as eng.csv 
 out_translated = os.path.join(TRAIN_PATH, "translated_samples.csv")
 out_combined   = os.path.join(TRAIN_PATH, "combined_eng_multilingual.csv")
 out_results    = os.path.join(BASE_PATH,  "eval_results_multilingual.csv")
@@ -188,7 +191,7 @@ print(f"Translated added : {len(df_translated)}")
 print(f"Total            : {len(df_combined)}")
 print(f" Saved combined → {out_combined}")
 
-# ── STEP 6: EVALUATE ON EXPANDED DATASET ──────────────────
+# EVALUATE ON EXPANDED DATASET
 BASELINE_PROMPT = """For the sentence below, return a JSON \
 object with 0 or 1 for each label.
 Only return JSON, nothing else.
@@ -277,7 +280,7 @@ for idx, (_, row) in enumerate(
         print(str(e))
         break
 
-# ── STEP 7: PRINT ACCURACY ────────────────────────────────
+# PRINT ACCURACY
 pred_df = pd.DataFrame(results)
 y_true  = pred_df[
     [f"true_{l}" for l in LABEL_COLS]].values
