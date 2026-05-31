@@ -127,3 +127,24 @@ for lang_file in non_eng_files:
             print(f"\n⚠️ Skipping {lang_code} "
                   f"— missing: {missing}")
             continue
+            df_lang = df_lang.dropna(subset=["text"])
+        n       = min(SAMPLES_PER_LANG, len(df_lang))
+        sample  = df_lang.sample(n, random_state=SEED)
+
+        print(f"\n🌍 [{lang_code.upper()}] "
+              f"translating {n} samples...")
+
+        for idx, (_, row) in enumerate(sample.iterrows()):
+            original   = str(row["text"]).strip()
+            translated = translate_to_english(original)
+
+            all_translated_rows.append({
+                "text":          translated,
+                "original_text": original,
+                "source_lang":   lang_code,
+                "political":     int(row["political"]),
+                "racial/ethnic": int(row["racial/ethnic"]),
+                "religious":     int(row["religious"]),
+                "gender/sexual": int(row["gender/sexual"]),
+                "other":         int(row["other"]),
+            })
