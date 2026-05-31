@@ -100,3 +100,12 @@ for attempt in range(retries):
             if r.status_code == 402:
                 raise RuntimeError(
                     "❌ Out of credits — top up openrouter.ai"
+                     )
+            print(f"  ⚠️ Attempt {attempt+1} failed: {e}")
+            time.sleep(2 ** attempt)
+
+        except Exception as e:
+            print(f"  ⚠️ Attempt {attempt+1} error: {e}")
+            time.sleep(2 ** attempt)
+
+    return text  # fallback — keep original
