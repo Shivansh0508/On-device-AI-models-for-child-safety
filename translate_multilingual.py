@@ -160,3 +160,23 @@ if (idx + 1) % 10 == 0:
     except Exception as e:
         print(f"\n❌ Error with {lang_code}: {e}")
         continue
+# ── STEP 5: SAVE + COMBINE ────────────────────────────────
+df_translated  = pd.DataFrame(all_translated_rows)
+
+# Save to same folder as eng.csv — guaranteed to exist
+out_translated = os.path.join(TRAIN_PATH, "translated_samples.csv")
+out_combined   = os.path.join(TRAIN_PATH, "combined_eng_multilingual.csv")
+out_results    = os.path.join(BASE_PATH,  "eval_results_multilingual.csv")
+
+df_translated.to_csv(out_translated, index=False)
+print(f"\n💾 Saved translated → {out_translated}")
+
+df_english     = pd.read_csv(ENG_FILE)
+df_combined    = pd.concat(
+    [
+        df_english[["text"] + LABEL_COLS],
+        df_translated[["text"]  + LABEL_COLS]
+    ],
+    ignore_index=True
+)
+df_combined.to_csv(out_combined, index=False)
