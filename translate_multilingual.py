@@ -24,7 +24,7 @@ SAMPLES_PER_LANG = 50
 SEED             = 42
 # ── STEP 2: AUTO-DETECT YOUR PATHS ───────────────────────
 # Searches your entire Drive for eng.csv to find the real path
-print("🔍 Searching for your dataset files...")
+print(" Searching for your dataset files...")
 
 found = glob(
     "/content/gdrive/My Drive/Colab Notebooks/On Device AI models for Child Safety/train/*.csv",
@@ -40,7 +40,7 @@ for f in found:
 eng_files = [f for f in found if os.path.basename(f) == "eng.csv"]
 if not eng_files:
     raise FileNotFoundError(
-        "❌ eng.csv not found anywhere in your Drive. "
+        " eng.csv not found anywhere in your Drive. "
         "Check your Drive is mounted and files are uploaded."
     )
 
@@ -48,7 +48,7 @@ ENG_FILE   = eng_files[0]
 TRAIN_PATH = os.path.dirname(ENG_FILE)
 BASE_PATH  = os.path.dirname(TRAIN_PATH)
 
-print(f"\n✅ Auto-detected paths:")
+print(f"\n Auto-detected paths:")
 print(f"   ENG_FILE   = {ENG_FILE}")
 print(f"   TRAIN_PATH = {TRAIN_PATH}")
 print(f"   BASE_PATH  = {BASE_PATH}")
@@ -59,8 +59,8 @@ non_eng_files  = [
     if os.path.basename(f) != "eng.csv"
 ]
 
-print(f"\n✅ English file   : {ENG_FILE}")
-print(f"✅ Non-English files found: {len(non_eng_files)}")
+print(f"\n English file   : {ENG_FILE}")
+print(f" Non-English files found: {len(non_eng_files)}")
 for f in non_eng_files:
     print(f"   → {os.path.basename(f)}")
 # ── TRANSLATION FUNCTION ──────────────────────────────────
@@ -99,13 +99,13 @@ for attempt in range(retries):
         except requests.exceptions.HTTPError as e:
             if r.status_code == 402:
                 raise RuntimeError(
-                    "❌ Out of credits — top up openrouter.ai"
+                    " Out of credits — top up openrouter.ai"
                      )
-            print(f"  ⚠️ Attempt {attempt+1} failed: {e}")
+            print(f"   Attempt {attempt+1} failed: {e}")
             time.sleep(2 ** attempt)
 
         except Exception as e:
-            print(f"  ⚠️ Attempt {attempt+1} error: {e}")
+            print(f"  Attempt {attempt+1} error: {e}")
             time.sleep(2 ** attempt)
 
     return text  # fallback — keep original
@@ -124,14 +124,14 @@ for lang_file in non_eng_files:
             if c not in df_lang.columns
         ]
         if missing:
-            print(f"\n⚠️ Skipping {lang_code} "
+            print(f"\n Skipping {lang_code} "
                   f"— missing: {missing}")
             continue
             df_lang = df_lang.dropna(subset=["text"])
         n       = min(SAMPLES_PER_LANG, len(df_lang))
         sample  = df_lang.sample(n, random_state=SEED)
 
-        print(f"\n🌍 [{lang_code.upper()}] "
+        print(f"\n [{lang_code.upper()}] "
               f"translating {n} samples...")
 
         for idx, (_, row) in enumerate(sample.iterrows()):
@@ -149,7 +149,7 @@ for lang_file in non_eng_files:
                 "other":         int(row["other"]),
             })
 if (idx + 1) % 10 == 0:
-                print(f"   ✅ {idx+1}/{n} done")
+                print(f"   {idx+1}/{n} done")
 
             time.sleep(0.4)
 
@@ -158,7 +158,7 @@ if (idx + 1) % 10 == 0:
         break
 
     except Exception as e:
-        print(f"\n❌ Error with {lang_code}: {e}")
+        print(f"\n Error with {lang_code}: {e}")
         continue
 # ── STEP 5: SAVE + COMBINE ────────────────────────────────
 df_translated  = pd.DataFrame(all_translated_rows)
@@ -169,7 +169,7 @@ out_combined   = os.path.join(TRAIN_PATH, "combined_eng_multilingual.csv")
 out_results    = os.path.join(BASE_PATH,  "eval_results_multilingual.csv")
 
 df_translated.to_csv(out_translated, index=False)
-print(f"\n💾 Saved translated → {out_translated}")
+print(f"\n Saved translated → {out_translated}")
 
 df_english     = pd.read_csv(ENG_FILE)
 df_combined    = pd.concat(
@@ -181,12 +181,12 @@ df_combined    = pd.concat(
 )
 df_combined.to_csv(out_combined, index=False)
 print(f"\n{'='*55}")
-print(f"📊 COMBINED DATASET")
+print(f" COMBINED DATASET")
 print(f"{'='*55}")
 print(f"English          : {len(df_english)}")
 print(f"Translated added : {len(df_translated)}")
 print(f"Total            : {len(df_combined)}")
-print(f"💾 Saved combined → {out_combined}")
+print(f" Saved combined → {out_combined}")
 
 # ── STEP 6: EVALUATE ON EXPANDED DATASET ──────────────────
 BASELINE_PROMPT = """For the sentence below, return a JSON \
@@ -239,7 +239,7 @@ def relaxed_parse(output):
         pass
     return binary
     print(f"\n{'='*55}")
-print("🔍 EVALUATING ON 200 SAMPLES FROM EXPANDED DATASET")
+print(" EVALUATING ON 200 SAMPLES FROM EXPANDED DATASET")
 print(f"{'='*55}")
 
 eval_sample = df_combined.sample(200, random_state=SEED)
@@ -269,7 +269,7 @@ for idx, (_, row) in enumerate(
             pd.DataFrame(results).to_csv(
                 out_results + ".partial", index=False
             )
-            print(f"   💾 Checkpoint at {idx+1}/200")
+            print(f"  Checkpoint at {idx+1}/200")
 
         time.sleep(0.3)
 
@@ -292,7 +292,7 @@ per_label_f1   = f1_score(
     y_true, y_pred, average=None,   zero_division=1
 )
 print(f"\n{'='*55}")
-print(f"📊 RESULTS — EXPANDED MULTILINGUAL DATASET")
+print(f" RESULTS — EXPANDED MULTILINGUAL DATASET")
 print(f"{'='*55}")
 print(f"Exact Match Accuracy : {exact_match*100:.2f}%")
 print(f"Macro F1             : {macro_f1*100:.2f}%")
@@ -301,12 +301,12 @@ for label, score in zip(LABEL_COLS, per_label_f1):
     print(f"  {label:<20} : {score*100:.2f}%")
 
 print(f"\n{'='*55}")
-print(f"📈 COMPARISON")
+print(f" COMPARISON")
 print(f"{'='*55}")
 print(f"English-only Macro F1    : 39.50%")
 print(f"Multilingual Macro F1    : {macro_f1*100:.2f}%")
 print(f"Improvement              : {macro_f1*100-39.50:+.2f}%")
 
 pred_df.to_csv(out_results, index=False)
-print(f"\n💾 Results saved → {out_results}")
-print("\n✅ DONE")
+print(f"\n Results saved → {out_results}")
+print("\n DONE")
