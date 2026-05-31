@@ -63,3 +63,24 @@ print(f"\n✅ English file   : {ENG_FILE}")
 print(f"✅ Non-English files found: {len(non_eng_files)}")
 for f in non_eng_files:
     print(f"   → {os.path.basename(f)}")
+# ── TRANSLATION FUNCTION ──────────────────────────────────
+def translate_to_english(text, retries=3):
+    prompt = f"""Translate the following sentence to English.
+Return ONLY the translated English text, nothing else.
+
+Sentence: {text}
+
+Translation:"""
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "MultilingualTranslation"
+    }
+    payload = {
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.0,
+        "max_tokens": 256
+    }
