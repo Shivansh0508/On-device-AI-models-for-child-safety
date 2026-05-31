@@ -22,3 +22,19 @@ LABEL_COLS       = [
 ]
 SAMPLES_PER_LANG = 50
 SEED             = 42
+# ── STEP 2: AUTO-DETECT YOUR PATHS ───────────────────────
+# Searches your entire Drive for eng.csv to find the real path
+print("🔍 Searching for your dataset files...")
+
+found = glob(
+    "/content/gdrive/My Drive/Colab Notebooks/On Device AI models for Child Safety/train/*.csv",
+    recursive=True
+)
+
+# Show what we found
+print(f"Found {len(found)} CSV files total:")
+for f in found:
+    print(f"  {f}")
+
+# Auto-detect train folder from eng.csv location
+eng_files = [f for f in found if os.path.basename(f) == "eng.csv"]
