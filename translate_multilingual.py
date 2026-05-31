@@ -197,4 +197,26 @@ Sentence: {text}
 
 Format: {{"political": 0, "racial_ethnic": 0, \
 "religious": 0, "gender_sexual": 0, "other": 0}}"""
+def call_gemma(prompt, retries=3):
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": MODEL,
+        "messages": [{"role":"user","content":prompt}],
+        "temperature": 0.0
+    }
+    for attempt in range(retries):
+        try:
+            r = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers, json=payload, timeout=60
+            )
+            r.raise_for_status()
+            return r.json()[
+                "choices"][0]["message"]["content"]
+        except:
+            time.sleep(2 ** attempt)
+    return '{}'
 
