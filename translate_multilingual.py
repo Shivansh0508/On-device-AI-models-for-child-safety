@@ -38,3 +38,17 @@ for f in found:
 
 # Auto-detect train folder from eng.csv location
 eng_files = [f for f in found if os.path.basename(f) == "eng.csv"]
+if not eng_files:
+    raise FileNotFoundError(
+        "❌ eng.csv not found anywhere in your Drive. "
+        "Check your Drive is mounted and files are uploaded."
+    )
+
+ENG_FILE   = eng_files[0]
+TRAIN_PATH = os.path.dirname(ENG_FILE)
+BASE_PATH  = os.path.dirname(TRAIN_PATH)
+
+print(f"\n✅ Auto-detected paths:")
+print(f"   ENG_FILE   = {ENG_FILE}")
+print(f"   TRAIN_PATH = {TRAIN_PATH}")
+print(f"   BASE_PATH  = {BASE_PATH}")
