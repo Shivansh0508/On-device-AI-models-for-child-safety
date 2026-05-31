@@ -291,3 +291,22 @@ macro_f1       = f1_score(
 per_label_f1   = f1_score(
     y_true, y_pred, average=None,   zero_division=1
 )
+print(f"\n{'='*55}")
+print(f"📊 RESULTS — EXPANDED MULTILINGUAL DATASET")
+print(f"{'='*55}")
+print(f"Exact Match Accuracy : {exact_match*100:.2f}%")
+print(f"Macro F1             : {macro_f1*100:.2f}%")
+print(f"\nPer-Label F1:")
+for label, score in zip(LABEL_COLS, per_label_f1):
+    print(f"  {label:<20} : {score*100:.2f}%")
+
+print(f"\n{'='*55}")
+print(f"📈 COMPARISON")
+print(f"{'='*55}")
+print(f"English-only Macro F1    : 39.50%")
+print(f"Multilingual Macro F1    : {macro_f1*100:.2f}%")
+print(f"Improvement              : {macro_f1*100-39.50:+.2f}%")
+
+pred_df.to_csv(out_results, index=False)
+print(f"\n💾 Results saved → {out_results}")
+print("\n✅ DONE")
