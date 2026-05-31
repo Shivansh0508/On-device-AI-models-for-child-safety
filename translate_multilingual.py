@@ -148,3 +148,15 @@ for lang_file in non_eng_files:
                 "gender/sexual": int(row["gender/sexual"]),
                 "other":         int(row["other"]),
             })
+if (idx + 1) % 10 == 0:
+                print(f"   ✅ {idx+1}/{n} done")
+
+            time.sleep(0.4)
+
+    except RuntimeError as e:
+        print(str(e))
+        break
+
+    except Exception as e:
+        print(f"\n❌ Error with {lang_code}: {e}")
+        continue
