@@ -52,3 +52,14 @@ print(f"\n✅ Auto-detected paths:")
 print(f"   ENG_FILE   = {ENG_FILE}")
 print(f"   TRAIN_PATH = {TRAIN_PATH}")
 print(f"   BASE_PATH  = {BASE_PATH}")
+# ── STEP 3: LOAD NON-ENGLISH FILES ────────────────────────
+all_lang_files = glob(f"{TRAIN_PATH}/*.csv")
+non_eng_files  = [
+    f for f in all_lang_files
+    if os.path.basename(f) != "eng.csv"
+]
+
+print(f"\n✅ English file   : {ENG_FILE}")
+print(f"✅ Non-English files found: {len(non_eng_files)}")
+for f in non_eng_files:
+    print(f"   → {os.path.basename(f)}")
