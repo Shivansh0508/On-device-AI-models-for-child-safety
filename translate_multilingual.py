@@ -84,3 +84,19 @@ Translation:"""
         "temperature": 0.0,
         "max_tokens": 256
     }
+for attempt in range(retries):
+        try:
+            r = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+            r.raise_for_status()
+            return r.json()[
+                "choices"][0]["message"]["content"].strip()
+
+        except requests.exceptions.HTTPError as e:
+            if r.status_code == 402:
+                raise RuntimeError(
+                    "❌ Out of credits — top up openrouter.ai"
