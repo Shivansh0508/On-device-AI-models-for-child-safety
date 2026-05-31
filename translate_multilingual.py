@@ -219,4 +219,22 @@ def call_gemma(prompt, retries=3):
         except:
             time.sleep(2 ** attempt)
     return '{}'
-
+def relaxed_parse(output):
+    binary = {k: 0 for k in LABEL_COLS}
+    try:
+        match = re.search(r'\{.*?\}', output, re.DOTALL)
+        if match:
+            parsed = json.loads(match.group())
+            binary["political"]     = int(
+                parsed.get("political",     0))
+            binary["racial/ethnic"] = int(
+                parsed.get("racial_ethnic", 0))
+            binary["religious"]     = int(
+                parsed.get("religious",     0))
+            binary["gender/sexual"] = int(
+                parsed.get("gender_sexual", 0))
+            binary["other"]         = int(
+                parsed.get("other",         0))
+    except:
+        pass
+    return binary
