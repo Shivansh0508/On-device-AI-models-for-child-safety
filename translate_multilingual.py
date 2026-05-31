@@ -238,3 +238,29 @@ def relaxed_parse(output):
     except:
         pass
     return binary
+    print(f"\n{'='*55}")
+print("🔍 EVALUATING ON 200 SAMPLES FROM EXPANDED DATASET")
+print(f"{'='*55}")
+
+eval_sample = df_combined.sample(200, random_state=SEED)
+results     = []
+
+for idx, (_, row) in enumerate(
+        tqdm(eval_sample.iterrows(), total=200)):
+    try:
+        prompt = BASELINE_PROMPT.format(text=row["text"])
+        raw    = call_gemma(prompt)
+        pred   = relaxed_parse(raw)
+
+        results.append({
+            "pred_political":     pred["political"],
+            "pred_racial/ethnic": pred["racial/ethnic"],
+            "pred_religious":     pred["religious"],
+            "pred_gender/sexual": pred["gender/sexual"],
+            "pred_other":         pred["other"],
+            "true_political":     int(row["political"]),
+            "true_racial/ethnic": int(row["racial/ethnic"]),
+            "true_religious":     int(row["religious"]),
+            "true_gender/sexual": int(row["gender/sexual"]),
+            "true_other":         int(row["other"]),
+        })
