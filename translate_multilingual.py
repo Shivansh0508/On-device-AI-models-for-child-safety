@@ -109,3 +109,21 @@ for attempt in range(retries):
             time.sleep(2 ** attempt)
 
     return text  # fallback — keep original
+# ── STEP 4: SAMPLE + TRANSLATE ────────────────────────────
+all_translated_rows = []
+
+for lang_file in non_eng_files:
+    lang_code = os.path.basename(lang_file).replace(".csv","")
+
+    try:
+        df_lang = pd.read_csv(lang_file)
+
+        # Check columns exist
+        missing = [
+            c for c in LABEL_COLS
+            if c not in df_lang.columns
+        ]
+        if missing:
+            print(f"\n⚠️ Skipping {lang_code} "
+                  f"— missing: {missing}")
+            continue
