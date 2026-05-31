@@ -264,3 +264,30 @@ for idx, (_, row) in enumerate(
             "true_gender/sexual": int(row["gender/sexual"]),
             "true_other":         int(row["other"]),
         })
+ # Checkpoint every 50
+        if (idx + 1) % 50 == 0:
+            pd.DataFrame(results).to_csv(
+                out_results + ".partial", index=False
+            )
+            print(f"   💾 Checkpoint at {idx+1}/200")
+
+        time.sleep(0.3)
+
+    except RuntimeError as e:
+        print(str(e))
+        break
+
+# ── STEP 7: PRINT ACCURACY ────────────────────────────────
+pred_df = pd.DataFrame(results)
+y_true  = pred_df[
+    [f"true_{l}" for l in LABEL_COLS]].values
+y_pred  = pred_df[
+    [f"pred_{l}" for l in LABEL_COLS]].values
+
+exact_match    = (y_true == y_pred).all(axis=1).mean()
+macro_f1       = f1_score(
+    y_true, y_pred, average="macro", zero_division=1
+)
+per_label_f1   = f1_score(
+    y_true, y_pred, average=None,   zero_division=1
+)
