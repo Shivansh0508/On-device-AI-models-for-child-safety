@@ -180,3 +180,21 @@ df_combined    = pd.concat(
     ignore_index=True
 )
 df_combined.to_csv(out_combined, index=False)
+print(f"\n{'='*55}")
+print(f"📊 COMBINED DATASET")
+print(f"{'='*55}")
+print(f"English          : {len(df_english)}")
+print(f"Translated added : {len(df_translated)}")
+print(f"Total            : {len(df_combined)}")
+print(f"💾 Saved combined → {out_combined}")
+
+# ── STEP 6: EVALUATE ON EXPANDED DATASET ──────────────────
+BASELINE_PROMPT = """For the sentence below, return a JSON \
+object with 0 or 1 for each label.
+Only return JSON, nothing else.
+
+Sentence: {text}
+
+Format: {{"political": 0, "racial_ethnic": 0, \
+"religious": 0, "gender_sexual": 0, "other": 0}}"""
+
