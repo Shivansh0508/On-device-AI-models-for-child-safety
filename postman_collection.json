@@ -7,3 +7,15 @@ CORS(app)
 API_KEY = "YOUR_KEY"
 
 SYSTEM_PROMPT = "Classify text into: political, religious, sexual, others. Respond with ONLY one word."
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    text = data.get("text", "")
+
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        },
