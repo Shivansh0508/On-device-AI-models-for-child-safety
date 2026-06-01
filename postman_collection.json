@@ -27,3 +27,9 @@ json={
             ]
         }
     )
+try:
+        output = response.json()["choices"][0]["message"]["content"]
+    except:
+        output = "error"
+
+    return jsonify({"category": output})
