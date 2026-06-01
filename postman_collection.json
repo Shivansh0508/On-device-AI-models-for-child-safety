@@ -37,5 +37,5 @@ from pyngrok import ngrok
 
 ngrok.set_auth_token("YOUR_TOKEN")
 
-public_url = ngrok.connect(5000)
-print("NGROK URL:", public_url)
+public_url = ngrok.connect(5500, "http")
+print(public_url)
