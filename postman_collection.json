@@ -33,3 +33,9 @@ try:
         output = "error"
 
     return jsonify({"category": output})
+from pyngrok import ngrok
+
+ngrok.set_auth_token("YOUR_TOKEN")
+
+public_url = ngrok.connect(5000)
+print("NGROK URL:", public_url)
