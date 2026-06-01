@@ -72,7 +72,6 @@ Full evaluation with macro-F1, per-label F1, exact-match accuracy, 95% bootstrap
 ├── gepa_optimize_IndividualCLASSES.py             # Stage 3
 ├── ChatGpt_Prompt_Examples.py                     # Stage 4
 ├── translate_multilingual.py                      # Stage 5
-├── main.py                                        # FastAPI deployment
 ├── postman_collection.json                        # API test collection
 ├──Datasets
 ├── 📂 train/
