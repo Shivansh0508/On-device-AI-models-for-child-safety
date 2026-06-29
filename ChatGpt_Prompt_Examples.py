@@ -783,6 +783,6 @@ with open("pipeline5_optimized_prompt.txt", "w") as f:
     f.write("="*60 + "\n")
     f.write(f"Baseline Macro-F1  : {PIPELINE1_BASELINE_F1*100:.2f}%\n")
     f.write(f"Pipeline 5 Macro-F1: {gepa_f1*100:.2f}%\n")
-    f.write(f"Improvement        : {improvement:+.2f}%\n")
+    f.write(f"Improvement       : {improvement:+.2f}%\n")
 
 print("Saved to: pipeline5_optimized_prompt.txt")
